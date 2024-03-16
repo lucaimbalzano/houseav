@@ -14,7 +14,7 @@ const app = express();
 app.use(express.json());
 
 app.listen(3000,()=>{
-    console.log('server on 30ds00dcsd@!')
+    console.log('server listen on 3K')
 });
 
 app.use("/api/user", userRouter);
