@@ -7,14 +7,14 @@ dotenv.config();
 
 
 mongoose.connect(process.env.MONGO).then(()=>{
-    console.log('mongodb connected')
+    console.log('[connection] mongodb connected')
 }).catch((err) => console.log(err));
 
 const app = express();
 app.use(express.json());
 
 app.listen(3000,()=>{
-    console.log('server listen on 3K')
+    console.log('[connection] server listen on 3K')
 });
 
 app.use("/api/user", userRouter);
