@@ -7,6 +7,9 @@ import {
   deleteUserFailure,
   deleteUserSuccess,
   deleteUserStart,
+  signOutUserFailure,
+  signOutUserSuccess,
+  signOutUserStart,
 } from "../redux/user/userSlice";
 import {
   getDownloadURL,
@@ -115,9 +118,9 @@ export default function Profile() {
         dispatch(deleteUserFailure(data.message));
         return;
       }
-      dispatch(deleteUserSuccess(data));
+      dispatch(signOutUserSuccess(data));
     } catch (error) {
-      dispatch(deleteUserFailure(data.message));
+      dispatch(signOutUserFailure(error.message));
     }
   };
 
