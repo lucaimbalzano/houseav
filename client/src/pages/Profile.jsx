@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useRef, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   updateUserFailure,
   updateUserStart,
@@ -183,6 +184,12 @@ export default function Profile() {
         >
           {loading ? "Loading.." : "Update"}
         </button>
+        <Link
+          className="text-center bg-gradient-to-r from-green-400 to-green-700 hover:bg-gradient-to-r hover:from-green-500 hover:to-green-800 border border-green-600 text-white hover:bg-green-500 hover:border-green-500 hover:text-white py-2 px-4 rounded-lg transition-all duration-300 uppercase"
+          to={"/create-listing"}
+        >
+          Create Listing
+        </Link>
       </form>
       <div className="flex justify-between mt-5">
         <span

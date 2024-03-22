@@ -1,17 +1,43 @@
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import home from "../assets/home.png";
 
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 640);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 640);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
-    <header className="bg-slate-700">
+    <header className="bg-slate-200">
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
         <Link to="/">
-          <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
-            <span className="text-slate-500">HOUSE</span>
-            <span className="text-slate-100">AV</span>
-          </h1>
+          {isSmallScreen ? (
+            <img width={35} height={35} src={home} alt="houseav" />
+          ) : (
+            <div className="flex items-center gap-6">
+              <img width={35} height={35} src={home} alt="houseav" />
+              <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
+                <span className="text-black-500 hover:text-gray-400">
+                  HOUSE
+                </span>
+                <span className="text-gray-400 ">AV</span>
+              </h1>
+            </div>
+          )}
         </Link>
         <form className="bg-slate-100 rounded-lg p-3 flex items-center">
           <input
