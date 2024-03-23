@@ -6,12 +6,16 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateListing() {
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
   const [files, setFiles] = useState([]);
   var currentTime = new Date().getTime();
@@ -36,8 +40,31 @@ export default function CreateListing() {
     sleepPlace: 1,
   });
 
-  const handleChange = () => {};
+  const handleChange = (event) => {
+    if (
+      event.target.id === "parking" ||
+      event.target.id === "furnished" ||
+      event.target.id === "offer"
+    ) {
+      setFormData({
+        ...formData,
+        [event.target.id]: event.target.checked,
+      });
+    }
 
+    if (
+      event.target.type === "text" ||
+      event.target.type === "textarea" ||
+      event.target.type === "number" ||
+      event.target.type === "date"
+    ) {
+      setFormData({
+        ...formData,
+        [event.target.id]: event.target.value,
+      });
+    }
+  };
+  console.log(formData);
   const handleImageSubmit = (event) => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
       setUploading(true);
@@ -106,7 +133,35 @@ export default function CreateListing() {
     });
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      if (formData.imageUrls.length < 1)
+        return setError("You must upload at least one image");
+      setLoading(true);
+      setError(false);
+      const res = await fetch("/api/listing/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          userRef: currentUser._id,
+        }),
+      });
+      const data = await res.json();
+      setLoading(false);
+      if (data.success === false) {
+        setError(data.message);
+      }
+      navigate(`/listing/${data._id}`);
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
+  };
+
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">
@@ -148,17 +203,21 @@ export default function CreateListing() {
           <input
             type="date"
             placeholder="Date Start From"
-            className="border p-3 rounded-lg"
+            className="border p-3 rounded-lg focus:outline-none focus:ring focus:border-blue-300 transition duration-300 ease-in-out bg-gradient-to-br from-gray-200 to-gray-100 hover:to-gray-50"
             id="availabilityDateStartFrom"
             required
+            onChange={handleChange}
+            value={formData.availabilityDateStartFrom}
           />
           <label className="text-gray-400 text-xs text-end pr-5">to</label>
           <input
             type="date"
             placeholder="Date end to"
-            className="border p-3 rounded-lg"
-            id="availabilityDateEnd"
+            className="border p-3 rounded-lg focus:outline-none focus:ring focus:border-blue-300 transition duration-300 ease-in-out bg-gradient-to-br from-gray-200 to-gray-100 hover:to-gray-50"
+            id="availabilityDateEndOn"
             required
+            onChange={handleChange}
+            value={formData.availabilityDateEndOn}
           />
           <div className="flex gap-6 flex-wrap">
             <div className="flex gap-2">
@@ -197,7 +256,7 @@ export default function CreateListing() {
                 id="availability"
                 className="w-5"
                 onChange={handleChange}
-                checked={formData.offer}
+                checked={formData.availability}
               />
               <span>Availability</span>
             </div>
@@ -209,7 +268,7 @@ export default function CreateListing() {
                   type="number"
                   id="bedrooms"
                   min="1"
-                  max="10"
+                  max="10000"
                   required
                   className="p-3 border border-gray-300 rounded-lg"
                   onChange={handleChange}
@@ -223,11 +282,11 @@ export default function CreateListing() {
                     type="number"
                     id="sleepPlace"
                     min="1"
-                    max="1000"
+                    max="100000"
                     required
                     className="p-3 border border-gray-300 rounded-lg"
                     onChange={handleChange}
-                    value={formData.bedrooms}
+                    value={formData.sleepPlace}
                   />
                   <p>Sleep place</p>
                 </div>
@@ -236,8 +295,8 @@ export default function CreateListing() {
                 <input
                   type="number"
                   id="bathrooms"
-                  min="1"
-                  max="10"
+                  min="0"
+                  max="100"
                   required
                   className="p-3 border border-gray-300 rounded-lg"
                   onChange={handleChange}
@@ -297,11 +356,10 @@ export default function CreateListing() {
               </div>
             ))}
           <button
-            // disabled={loading || uploading}
+            disabled={loading || uploading}
             className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
           >
-            {/* {loading ? "Creating..." : "Create listing"} */}
-            Create Listing
+            {loading ? "Creating..." : "Create listing"}
           </button>
           {error && <p className="text-red-700 text-sm">{error}</p>}
         </div>
