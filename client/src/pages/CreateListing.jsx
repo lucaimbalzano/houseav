@@ -35,11 +35,17 @@ export default function CreateListing() {
     parking: false,
     furnished: false,
     availability: true,
-    availabilityDateStartFrom: currentTime,
-    availabilityDateEndOn: currentTimePlusWeek,
+    availabilityDateStartFrom: new Date(currentTime)
+      .toISOString()
+      .split("T")[0],
+    availabilityDateEndOn: new Date(currentTimePlusWeek)
+      .toISOString()
+      .split("T")[0],
     sleepPlace: 1,
   });
-
+  console.log(
+    formData.availabilityDateStartFrom + "-" + formData.availabilityDateEndOn
+  );
   const handleChange = (event) => {
     if (
       event.target.id === "parking" ||
