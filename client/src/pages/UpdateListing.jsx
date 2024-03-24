@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { firebaseApp } from "../firebase.js";
 import {
   getDownloadURL,
@@ -7,15 +7,16 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-export default function CreateListing() {
+export default function UpdateListing() {
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const params = useParams();
 
   const [files, setFiles] = useState([]);
   var currentTime = new Date().getTime();
@@ -39,6 +40,30 @@ export default function CreateListing() {
     availabilityDateEndOn: currentTimePlusWeek,
     sleepPlace: 1,
   });
+
+  function formattedDate(dateInput) {
+    try {
+      const date = new Date(dateInput);
+      const formattedDate = date.toISOString().split("T")[0];
+      return formattedDate;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    const fetchListing = async () => {
+      const listingId = params.listingId;
+      const listing = await fetch(`/api/listing/get/${listingId}`).catch(error);
+      const data = await listing.json();
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      }
+      setFormData(data);
+    };
+    fetchListing();
+  }, []);
 
   const handleChange = (event) => {
     if (
@@ -139,7 +164,7 @@ export default function CreateListing() {
         return setError("You must upload at least one image");
       setLoading(true);
       setError(false);
-      const res = await fetch("/api/listing/create", {
+      const res = await fetch(`/api/listing/update/${params.listingId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -164,7 +189,7 @@ export default function CreateListing() {
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">
-        Create a Listing
+        Update a Listing
       </h1>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
         <div className="flex flex-col gap-4 flex-1">
@@ -206,7 +231,7 @@ export default function CreateListing() {
             id="availabilityDateStartFrom"
             required
             onChange={handleChange}
-            value={formData.availabilityDateStartFrom}
+            value={formattedDate(formData.availabilityDateStartFrom)}
           />
           <label className="text-gray-400 text-xs text-end pr-5">to</label>
           <input
@@ -216,7 +241,7 @@ export default function CreateListing() {
             id="availabilityDateEndOn"
             required
             onChange={handleChange}
-            value={formData.availabilityDateEndOn}
+            value={formattedDate(formData.availabilityDateEndOn)}
           />
           <div className="flex gap-6 flex-wrap">
             <div className="flex gap-2">
@@ -357,7 +382,7 @@ export default function CreateListing() {
             disabled={loading || uploading}
             className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
           >
-            {loading ? "Creating..." : "Create listing"}
+            {loading ? "Updating..." : "Update listing"}
           </button>
           {error && <p className="text-red-700 text-sm">{error}</p>}
         </div>

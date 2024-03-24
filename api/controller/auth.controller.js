@@ -42,7 +42,6 @@ export const google = async (req, res, next) => {
             user.avatar = req.body.photoUrl;
             await user.save();
         }
-        console.log(user);
         const { password: pass, ...rest } = user._doc;
         res
           .cookie('access_token', token, { httpOnly: true })
