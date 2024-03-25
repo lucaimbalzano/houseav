@@ -102,8 +102,7 @@ export default function CreateListing() {
 
   const storeImageUrls = async (file) => {
     if (file.size > 2 * 1024 * 1024) {
-      console.log("ERROR----------------");
-      throw new Error("File exceeds maximum size (2MB)");
+      throw new Error("Error Occurred: File exceeds maximum size (2MB)");
     }
     return new Promise((resolve, reject) => {
       const storage = getStorage(firebaseApp);
