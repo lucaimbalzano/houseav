@@ -34,6 +34,7 @@ export const signin = async (req, res, next) => {
 }
 
 export const google = async (req, res, next) => {
+  let expirationTimestamp = new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)); // 30 days
     try {
       const user = await User.findOne({ email: req.body.email });
       if (user) {
@@ -44,7 +45,7 @@ export const google = async (req, res, next) => {
         }
         const { password: pass, ...rest } = user._doc;
         res
-          .cookie('access_token', token, { httpOnly: true })
+          .cookie('access_token', token, { httpOnly: true , expires: expirationTimestamp})
           .status(200)
           .json(rest);
       } else {
@@ -64,13 +65,13 @@ export const google = async (req, res, next) => {
         const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
         const { password: pass, ...rest } = newUser._doc;
         res
-          .cookie('access_token', token, { httpOnly: true })
+          .cookie('access_token', token, { httpOnly: true , expires: expirationTimestamp})
           .status(200)
           .json(rest);
       }
     } catch (error) {
       next(error);
-    }
+    } 
   };
 
 

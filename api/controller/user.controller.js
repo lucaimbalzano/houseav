@@ -65,3 +65,19 @@ export const getUser = async (req, res, next) => {
         return next(errorHandler(500, error.message));
     }
 }
+
+
+export const getUsers = async (req, res, next) => {
+    try {
+        const users = await User.find({});
+        if(!users) return next(errorHandler(404, 'Not users found!'));
+        // const {password: pass, ...rest} = users._doc;
+        const allUsersFormatted = users.map(({ _doc }) => {
+            const { password, ...rest } = _doc;
+            return rest;
+          });
+        res.status(200).json(allUsersFormatted);
+    } catch (error) {
+        return next(errorHandler(500, error.message));
+    }
+}
