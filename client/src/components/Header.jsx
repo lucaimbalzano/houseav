@@ -14,32 +14,11 @@ export default function Header() {
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth <= 640);
     };
-
     window.addEventListener("resize", handleResize);
-
-    // Cleanup function to remove the event listener
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set("searchTerm", searchTerm);
-    const searchQuery = urlParams.toString();
-    navigate(`/search?${searchQuery}`);
-  };
-
-  console.log(location.search);
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const searchTermFromUrl = urlParams.get("searchTerm");
-    if (searchTermFromUrl) {
-      setSearchTerm(searchTermFromUrl);
-    }
-  }, [location.search]);
 
   return (
     <header className="bg-slate-200">
@@ -59,21 +38,7 @@ export default function Header() {
             </div>
           )}
         </Link>
-        <form
-          className="bg-slate-100 rounded-lg p-3 flex items-center"
-          onSubmit={handleSubmit}
-        >
-          <input
-            type="text"
-            placeholder="Search.."
-            className="bg-transparent focus:outline-none w-24 sm:w-64"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button>
-            <FaSearch className="text-slate-600" />
-          </button>
-        </form>
+
         <ul className="flex gap-4">
           <Link to="/">
             <li className="hidden sm:inline text-slate-400 hover:text-slate-200">

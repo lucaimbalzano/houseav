@@ -3,23 +3,6 @@ import { MdLocationOn } from "react-icons/md";
 import { useEffect, useState } from "react";
 
 export default function ListingItem({ listing }) {
-  //   const [imageUrl, setImageUrl] = useState(
-  //     "https://53.fs1.hubspotusercontent-na1.net/hub/53/hubfs/Sales_Blog/real-estate-business-compressor.jpg?width=595&height=400&name=real-estate-business-compressor.jpg"
-  //   );
-
-  //   useEffect(() => {
-  //     const fetchImage = async () => {
-  //       if (listing.imageUrls && listing.imageUrls.length > 0) {
-  //         const response = await fetch(listing.imageUrls[0]);
-  //         if (response.ok) {
-  //           setImageUrl(listing.imageUrls[0]);
-  //         }
-  //       }
-  //     };
-
-  //     fetchImage();
-  //   }, [listing.imageUrls]);
-
   return (
     <div className="bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg w-full sm:w-[330px]">
       <Link to={`/listing/${listing._id}`}>

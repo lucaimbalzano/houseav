@@ -10,7 +10,7 @@ listingRouter.delete('/delete/:id', verifyUserToken, deleteListing);
 listingRouter.post('/update/:id', verifyUserToken, updateListing);
 listingRouter.get('/get/:id', getListing);
 listingRouter.get('/get', getListingsBySearch);
-listingRouter.get('/get-all/', getListings)
-listingRouter.delete('/delete-all', deleteAllListing)
+listingRouter.get('/get-all/', getListings) //TODO admin token
+listingRouter.delete('/delete-all', deleteAllListing) //TODO admin token
 
 export default listingRouter;

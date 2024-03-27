@@ -43,7 +43,7 @@ export default function Profile() {
     const storage = getStorage(firebaseApp);
     const filenameOfNewEntry = new Date().getTime() + file.name;
     const storageRef = ref(storage, filenameOfNewEntry);
-    const uploadTask = uploadBytesResumable(storageRef, file); //progess watch
+    const uploadTask = uploadBytesResumable(storageRef, file); //progress watch
 
     uploadTask.on(
       "state_changed",
