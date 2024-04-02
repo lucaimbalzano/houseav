@@ -42,7 +42,7 @@ export default function SearchFilter() {
   return (
     <div>
       <form
-        className="bg-slate-100 rounded-lg p-3 flex items-center "
+        className="bg-rgb(241,245,241) rounded-lg p-3 flex items-center "
         onSubmit={handleSubmit}
       >
         <div className="w-[304px]">

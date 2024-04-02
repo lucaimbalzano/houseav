@@ -21,7 +21,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-slate-200">
+    <header className="bg-white">
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
         <Link to="/">
           {isSmallScreen ? (

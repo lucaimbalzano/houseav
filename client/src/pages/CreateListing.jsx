@@ -8,6 +8,8 @@ import {
 } from "firebase/storage";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { RiUploadCloud2Fill } from "react-icons/ri";
+import Spinner from "../components/Spinner.jsx";
 
 export default function CreateListing() {
   const [imageUploadError, setImageUploadError] = useState(false);
@@ -310,6 +312,7 @@ export default function CreateListing() {
             </div>
           </div>
         </div>
+
         <div className="flex flex-col flex-1 gap-4">
           <p className="font-semibold">
             Images:
@@ -317,10 +320,16 @@ export default function CreateListing() {
               The first image will be the cover (max 6)
             </span>
           </p>
-          <div className="flex gap-4">
+          <div className="flex gap-4 items-center">
             <input
               onChange={(e) => setFiles(e.target.files)}
-              className="p-3 border border-gray-300 rounded w-full"
+              className="p-3 rounded-lg w-full bg-white bg-opacity-30 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out
+              
+              file:mr-4 file:py-2 file:px-4
+              file:rounded-lg file:border-0
+              file:text-sm file:font-semibold
+              file:bg-gray-900 file:text-gray-50
+              hover:file:bg-gray-700 hover:file:scale-105 hover:file:shadow-md"
               type="file"
               id="images"
               accept="image/*"
@@ -330,9 +339,10 @@ export default function CreateListing() {
               type="button"
               disabled={uploading}
               onClick={handleImageSubmit}
-              className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80"
+              className="h-[70%] pr-3 pl-3 text-green-700 border border-green-700 rounded-lg hover:shadow-lg disabled:opacity-80 flex gap-2 items-center"
             >
-              {uploading ? "Uploading..." : "Upload"}
+              <RiUploadCloud2Fill />
+              {uploading ? <Spinner /> : "Upload"}
             </button>
           </div>
           <p className="text-red-700 text-sm">
@@ -360,9 +370,9 @@ export default function CreateListing() {
             ))}
           <button
             disabled={loading || uploading}
-            className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+            className="w-full text-center mt-4 justify-center text-gray-900 font-semibold py-3 px-6 bg-gray-400 bg-opacity-50 rounded-lg shadow-md hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out flex items-center gap-3"
           >
-            {loading ? "Creating..." : "Create listing"}
+            {loading ? <Spinner /> : "Create listing"}
           </button>
           {error && <p className="text-red-700 text-sm">{error}</p>}
         </div>

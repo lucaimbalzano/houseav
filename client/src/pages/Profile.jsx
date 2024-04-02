@@ -1,4 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
+import { IoCheckmarkDoneCircle, IoCreate } from "react-icons/io5";
+import { MdPlaylistPlay } from "react-icons/md";
+import { FaSignOutAlt } from "react-icons/fa";
+import { TiUserDelete } from "react-icons/ti";
 import { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -19,6 +23,7 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { firebaseApp } from "../firebase";
+import Spinner from "../components/Spinner";
 
 export default function Profile() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -216,25 +221,46 @@ export default function Profile() {
         />
         <button
           disabled={loading}
-          className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-95 disabled:opacity-80"
+          className="w-full text-center mt-4 justify-center text-gray-900 font-semibold py-3 px-6 bg-gray-400 bg-opacity-50 rounded-lg shadow-md hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out flex items-center gap-3"
         >
-          {loading ? "Loading.." : "Update"}
+          {loading ? (
+            <Spinner />
+          ) : (
+            <div className="flex gap-2">
+              <IoCheckmarkDoneCircle className="text-2xl" />
+              Update
+            </div>
+          )}
         </button>
         <Link
-          className="text-center bg-gradient-to-r from-green-400 to-green-700 hover:bg-gradient-to-r hover:from-green-500 hover:to-green-800 border border-green-600 text-white hover:bg-green-500 hover:border-green-500 hover:text-white py-2 px-4 rounded-lg transition-all duration-300 uppercase"
+          className="w-full text-center mt-4 justify-center text-gray-900 font-semibold py-3 px-6 bg-gray-400 bg-opacity-50 rounded-lg shadow-md hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out flex items-center gap-3"
           to={"/create-listing"}
         >
+          <IoCreate className="text-2xl" />
           Create Listing
         </Link>
+        <button
+          type="button"
+          onClick={handleShowListings}
+          className="w-full text-center mt-4 justify-center text-gray-900 font-semibold py-3 px-6 bg-gray-400 bg-opacity-50 rounded-lg shadow-md hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out flex items-center gap-3"
+        >
+          <MdPlaylistPlay className="text-2xl" />
+          Show Listings
+        </button>
       </form>
       <div className="flex justify-between mt-5">
         <span
-          className="text-red-700 cursor-pointer"
+          className="text-red-700 cursor-pointer flex items-center gap-2 hover:scale-105"
           onClick={handleDeleteUser}
         >
+          <TiUserDelete />
           Delete account
         </span>
-        <span className="text-blue-500 cursor-pointer" onClick={handleSignOut}>
+        <span
+          className="text-blue-500 cursor-pointer flex items-center gap-2 hover:scale-105"
+          onClick={handleSignOut}
+        >
+          <FaSignOutAlt />
           Sign out
         </span>
       </div>
@@ -243,9 +269,6 @@ export default function Profile() {
         <p className="text-green-500 mt-5">
           {updateSuccess ? "Update Success" : ""}
         </p>
-        <button onClick={handleShowListings} className="text-green-700 w-full">
-          Show Listings
-        </button>
       </div>
       <div className="flex justify-center gap-3 ">
         <p className="text-red-700 mt-5">
