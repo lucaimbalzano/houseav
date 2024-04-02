@@ -7,6 +7,7 @@ import {
   signInFailure,
 } from "../redux/user/userSlice";
 import OAuth from "../components/OAuth";
+import Spinner from "../components/Spinner";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
@@ -48,13 +49,13 @@ export default function SignIn() {
   };
 
   return (
-    <div className="p-3 max-w-lg mx-auto">
-      <h1 className="text-3xl text-center font-semibold my-7">SignIn</h1>
+    <div className="p-3 mt-14 max-w-lg mx-auto h-screen">
+      <h1 className="text-3xl text-center font-semibold my-7">Welcome back</h1>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <input
           type="email"
           placeholder="email"
-          className="border p-3 rounded-lg"
+          className="border p-3 rounded-lg "
           id="email"
           onChange={handleChange}
         />
@@ -68,9 +69,9 @@ export default function SignIn() {
 
         <button
           disabled={loading}
-          className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+          className="w-full text-center mt-4 justify-center text-gray-900 py-3 px-6 bg-gray-400 bg-opacity-50 rounded-lg shadow-md hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out flex items-center gap-3"
         >
-          {loading ? "Loading..." : "Sign In"}
+          {loading ? <Spinner /> : "Sign In"}
         </button>
         <OAuth />
       </form>
