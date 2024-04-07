@@ -24,10 +24,9 @@ export default function Home() {
   }, []);
   return (
     <div>
-      {/* top */}
-      <div className="flex-wrap md:flex h-screen justify-center">
-        <div className="flex flex-3 flex-col gap-6 p-10 md:p-28 px-3 max-w-6xl mx-auto ">
-          <h1 className="text-black-700 font-bold text-5xl lg:text-5xl">
+      <div className="flex flex-col lg:flex-row h-screen justify-center items-center lg:justify-between">
+        <div className="flex-1 flex flex-col gap-6 p-10 md:p-28 px-3 max-w-6xl mx-auto max-w-[90%]">
+          <h1 className="text-black-700 font-bold pt-24 sm:pt-0 text-4xl lg:text-7xl">
             Be <span className="text-slate-500">hospitable</span> to one another
             <br />
             without complaint.
@@ -38,17 +37,18 @@ export default function Home() {
           </div>
           <SearchFilter />
         </div>
-        <div className="flex-2 flex justify-center items-center pr-2 md:pr-32">
+
+        <div className="flex-1 flex justify-center pr-2 md:pr-32">
           <img
             src="./roomHomePage2.png"
             alt=""
-            className="h-[300px] w-[340px] items-center"
+            className="h-[290px] w-[290px] mb-24 sm:h-[350px] sm:w-[390px] items-center"
           />
         </div>
       </div>
 
       {/* swiper */}
-      <Swiper navigation>
+      {/* <Swiper navigation>
         {offerListings &&
           offerListings.length > 0 &&
           offerListings.map((listing) => (
@@ -63,7 +63,7 @@ export default function Home() {
               ></div>
             </SwiperSlide>
           ))}
-      </Swiper>
+      </Swiper> */}
 
       {/* listing results for offer, sale and rent */}
 
