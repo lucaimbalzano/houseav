@@ -1,14 +1,16 @@
-import { FaSearch } from "react-icons/fa";
+import { RxDashboard } from "react-icons/rx";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import home from "../assets/home.png";
+import { checkIfIsAdmin } from "../../utils/utils";
 
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 640);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -19,6 +21,11 @@ export default function Header() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    if (currentUser || !isAdmin) checkIfIsAdmin(currentUser, setIsAdmin);
+    console.log(isAdmin);
+  }, [currentUser]);
 
   return (
     <header className="bg-white">
@@ -39,7 +46,7 @@ export default function Header() {
           )}
         </Link>
 
-        <ul className="flex gap-4">
+        <ul className="flex gap-4 items-center">
           <Link to="/">
             <li className="hidden sm:inline text-slate-400 hover:text-slate-200">
               Home
@@ -50,6 +57,11 @@ export default function Header() {
               About
             </li>
           </Link>
+          {isAdmin && (
+            <Link to="/profile">
+              <RxDashboard className="text-2xl text-center flex items-center" />
+            </Link>
+          )}
           <Link to="/profile">
             {currentUser ? (
               <img

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+
 const userSchema = new mongoose.Schema(
 {
     username: {
@@ -18,14 +19,14 @@ const userSchema = new mongoose.Schema(
     },
     avatar:{
         type: String,
-        default: "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png"
+        default: "https://freesvg.org/img/abstract-user-flat-4.png",
     },
-    roles: [
+    role: 
         {
           type: mongoose.Schema.ObjectId,
           ref: 'Role',
         },
-      ],
+      
 }, {timestamps:true});
 
 const User = mongoose.model('User', userSchema);

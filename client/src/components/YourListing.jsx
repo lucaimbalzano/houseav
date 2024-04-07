@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { RiDeleteBin6Fill, RiEditCircleFill } from "react-icons/ri";
 import { BsHousesFill } from "react-icons/bs";
 
-export default function YourListing({ userListings }) {
+export default function YourListing({ userListings, setUserListings }) {
   const handleListingDelete = async (listingId) => {
     try {
       const res = await fetch(`/api/listing/delete/${listingId}`, {
@@ -23,6 +23,11 @@ export default function YourListing({ userListings }) {
   };
   return (
     <div>
+      {userListings.length > 0 && (
+        <p className="text-sm text-blue-300 flex justify-center">
+          Listings not present for this user
+        </p>
+      )}
       {userListings && userListings.length > 0 && (
         <div className="flex flex-col gap-4">
           <h1 className="justify-center items-center mt-7 text-2xl font-semibold flex gap-2">

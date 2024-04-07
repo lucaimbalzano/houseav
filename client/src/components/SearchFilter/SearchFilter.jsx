@@ -20,7 +20,6 @@ export default function SearchFilter() {
     if (searchTermFromUrl) {
       setSearchTerm(searchTermFromUrl);
     }
-    console.log(searchTerm);
   }, [location.search]);
 
   const svgSearch = (

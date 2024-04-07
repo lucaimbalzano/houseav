@@ -25,6 +25,27 @@ export default function SignIn() {
     });
   };
 
+  const getRoleNamesByRoleId = async (role) => {
+    try {
+      dispatch(signInStart());
+      const res = await fetch("/api/user/roles", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ role }),
+      });
+      const data = await res.json();
+      if (data.success == false) {
+        dispatch(signInFailure(data.message));
+        return None;
+      }
+      return data;
+    } catch (error) {
+      dispatch(signInFailure(error.message));
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -41,6 +62,9 @@ export default function SignIn() {
         dispatch(signInFailure(data.message));
         return;
       }
+      var roleNames = await getRoleNamesByRoleId(data.role);
+      if (!roleNames) dispatch(signInFailure(roleNames));
+      data.role = roleNames;
       dispatch(signInSuccess(data));
       navigate("/");
     } catch (error) {

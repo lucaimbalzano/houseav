@@ -1,4 +1,7 @@
+import mongoose from "mongoose";
 import Listing from "../models/listing.model.js";
+import Permission from "../models/permission.model.js";
+import Role from "../models/role.model.js";
 import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 import bcryptjs from "bcryptjs";
@@ -81,3 +84,43 @@ export const getUsers = async (req, res, next) => {
         return next(errorHandler(500, error.message));
     }
 }
+
+export const getUserRoles = async (req, res, next) => {
+    try {
+        console.log(req.body)
+        const roleId = new mongoose.Types.ObjectId(req.body.role);
+        const roleUser = await Role.findById(roleId)
+        const permissionNames = [];
+        for (const permission of roleUser.permissions) {
+            const permissionDb = await Permission.findById(permission)
+            permissionNames.push(permissionDb.name);
+        }
+        return res.status(200).json(permissionNames);
+    } catch (error) {
+        return next(errorHandler(500, error.message));
+    }
+}
+
+
+async function checkRoleGetPermissions(email){
+    const user = await User.findOne({'email': email});
+    if(!user) errorHandler(404, 'User not found!')
+    const roleUser = await Role.findById(user.role)
+    const permissionNames = [];
+    for (const permission of roleUser.permissions) {
+        const permissionDb = await Permission.findById(permission)
+        permissionNames.push(permissionDb.name);
+    }
+    return permissionNames;
+}
+
+async function getRoleNameByEmail(email){
+    const user = await User.findOne({'email': email});
+    if(!user) errorHandler(404, 'User not found!')
+    const roleUser = await Role.findById(user.role)
+    if(!roleUser) errorHandler(404, 'Role user not found!');
+    return roleUser.name;
+}
+
+
+export {checkRoleGetPermissions, getRoleNameByEmail};

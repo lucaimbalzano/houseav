@@ -10,7 +10,6 @@ import SearchFilter from "../components/SearchFilter/SearchFilter";
 export default function Home() {
   const [offerListings, setOfferListings] = useState([]);
   SwiperCore.use([Navigation]);
-  console.log(offerListings);
   useEffect(() => {
     const fetchOfferListings = async () => {
       try {

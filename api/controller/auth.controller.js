@@ -3,13 +3,12 @@ import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 import jwt from 'jsonwebtoken';
 import Role from "../models/role.model.js";
-import { getRoleNameByEmail } from "../utils/checkRolePermission.js";
 
 export const signup = async (req, res, next) => {
     const {username, email, password} = req.body;
     const hashedPassword = bcryptjs.hashSync(password,16);
     const userRolePending = await Role.findOne({'name':'pendingUser'});
-    const newUser = new User({username, email, password: hashedPassword, roles: userRolePending});
+    const newUser = new User({username, email, password: hashedPassword, role: userRolePending});
     try{
         await newUser.save();
         res.status(201).json("User created successfully")
