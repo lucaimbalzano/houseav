@@ -58,7 +58,7 @@ export default function Header() {
             </li>
           </Link>
           {isAdmin && (
-            <Link to="/profile">
+            <Link to="/dashboard">
               <RxDashboard className="text-2xl text-center flex items-center" />
             </Link>
           )}

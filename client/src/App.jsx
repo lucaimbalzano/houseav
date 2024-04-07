@@ -13,6 +13,8 @@ import Listing from "./pages/Listing";
 import Search from "./pages/Search";
 import Footer from "./components/Footer";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import QueueRegister from "./pages/Dashboard/QueueRegister";
+import QueueListing from "./pages/Dashboard/QueueListing";
 
 export default function App() {
   return (
@@ -26,6 +28,8 @@ export default function App() {
         <Route path="/search" element={<Search />} />
         <Route element={<PrivateRoute />}>
           <Route path="/" element={<Home />} />
+          <Route path="/queue-listing" element={<QueueListing />} />
+          <Route path="/queue-register" element={<QueueRegister />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/create-listing" element={<CreateListing />} />
