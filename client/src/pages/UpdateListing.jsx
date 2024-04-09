@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { firebaseApp } from "../firebase.js";
+import { RiEditCircleLine } from "react-icons/ri";
 import {
   getDownloadURL,
   getStorage,
@@ -187,8 +188,9 @@ export default function UpdateListing() {
   };
 
   return (
-    <main className="p-3 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-semibold text-center my-7">
+    <main className="p-3 max-w-4xl mx-auto h-screen">
+      <h1 className="text-3xl font-semibold my-7 flex items-center gap-2 justify-center">
+        <RiEditCircleLine />
         Update a Listing
       </h1>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">

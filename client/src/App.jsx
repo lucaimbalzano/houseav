@@ -15,6 +15,7 @@ import Footer from "./components/Footer";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import QueueRegister from "./pages/Dashboard/QueueRegister";
 import QueueListing from "./pages/Dashboard/QueueListing";
+import NotFound from "./pages/NotFound";
 
 export default function App() {
   return (
@@ -38,6 +39,7 @@ export default function App() {
             element={<UpdateListing />}
           />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </BrowserRouter>

@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 export default function Home() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
   const [offerListings, setOfferListings] = useState([]);
+  console.log(currentUser.role.length);
   SwiperCore.use([Navigation]);
   useEffect(() => {
     const fetchOfferListings = async () => {
@@ -38,14 +39,14 @@ export default function Home() {
             <br />1 Peter 4:9
           </div>
 
-          {currentUser.role.length > 1 ?? <SearchFilter />}
+          {currentUser.role.length > 1 && <SearchFilter />}
         </div>
 
         <div className="flex-1 flex justify-center pr-2 md:pr-32">
           <img
             src="./roomHomePage2.png"
             alt=""
-            className="h-[290px] w-[290px] mb-24 sm:h-[350px] sm:w-[390px] items-center"
+            className="h-[290px] w-[290px] mb-24 sm:h-[350px] sm:w-[390px] lg:h-[450px] lg:w-[490px] items-center"
           />
         </div>
       </div>
@@ -69,7 +70,7 @@ export default function Home() {
       </Swiper> */}
 
       {/* listing results for offer, sale and rent */}
-      {currentUser.role.length > 1 ?? (
+      {currentUser.role.length > 1 && (
         <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
           {offerListings && offerListings.length > 0 && (
             <div className="">

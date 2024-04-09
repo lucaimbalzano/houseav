@@ -5,6 +5,7 @@ import Role from "../models/role.model.js";
 import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 import bcryptjs from "bcryptjs";
+import QueueRegistration from "../models/queueRegister.js";
 
 export const test = (req, res) => {
     res.json({message:'Api route is working correctly.'})  ;
@@ -87,7 +88,6 @@ export const getUsers = async (req, res, next) => {
 
 export const getUserRoles = async (req, res, next) => {
     try {
-        console.log(req.body)
         const roleId = new mongoose.Types.ObjectId(req.body.role);
         const roleUser = await Role.findById(roleId)
         const permissionNames = [];
@@ -120,6 +120,19 @@ async function getRoleNameByEmail(email){
     const roleUser = await Role.findById(user.role)
     if(!roleUser) errorHandler(404, 'Role user not found!');
     return roleUser.name;
+}
+
+export const getQueueRegister = async (req, res, next) => {
+    try {
+        const queueRegistrations = await QueueRegistration.find({});
+        const users = await User.find({
+          _id: { $in: queueRegistrations.map(item => item.user) }
+        }).select('-password');   
+        return res.status(200).json(users);
+      } catch (error) {
+        errorHandler(500, 'Error occured while retriving user data: '+error)
+        throw error;
+      }
 }
 
 

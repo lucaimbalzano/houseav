@@ -9,6 +9,7 @@ import {
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RiUploadCloud2Fill } from "react-icons/ri";
+import { LuCopyPlus } from "react-icons/lu";
 import Spinner from "../components/Spinner.jsx";
 
 export default function CreateListing() {
@@ -45,9 +46,7 @@ export default function CreateListing() {
       .split("T")[0],
     sleepPlace: 1,
   });
-  console.log(
-    formData.availabilityDateStartFrom + "-" + formData.availabilityDateEndOn
-  );
+
   const handleChange = (event) => {
     if (
       event.target.id === "parking" ||
@@ -170,7 +169,8 @@ export default function CreateListing() {
 
   return (
     <main className="p-3 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-semibold text-center my-7">
+      <h1 className="text-3xl font-semibold my-7 flex items-center gap-2 justify-center">
+        <LuCopyPlus />
         Create a Listing
       </h1>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
@@ -339,10 +339,17 @@ export default function CreateListing() {
               type="button"
               disabled={uploading}
               onClick={handleImageSubmit}
-              className="h-[70%] pr-3 pl-3 text-green-700 border border-green-700 rounded-lg hover:shadow-lg disabled:opacity-80 flex gap-2 items-center"
+              className="h-[70%] pr-3 pl-3 text-blue-700 border border-blue-700 rounded-lg hover:shadow-lg disabled:opacity-80 flex gap-2 items-center bg-slate-100"
             >
-              <RiUploadCloud2Fill />
-              {uploading ? <Spinner /> : "Upload"}
+              <RiUploadCloud2Fill className="text-2xl" />
+              {/* {uploading ? <Spinner /> : "Upload"} */}
+              {uploading ? (
+                <>
+                  <p>Uploading</p>
+                </>
+              ) : (
+                "Upload"
+              )}
             </button>
           </div>
           <p className="text-red-700 text-sm">

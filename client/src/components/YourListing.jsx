@@ -27,11 +27,13 @@ export default function YourListing({
   };
   return (
     <div>
-      {currentUser.role.length > 1 && userListings.length == 0 && (
-        <p className="text-sm text-blue-300 flex justify-center">
-          Listings not present for this user
-        </p>
-      )}
+      {currentUser.role.length > 1 &&
+        userListings != undefined &&
+        userListings.length == 0 && (
+          <p className="text-sm text-blue-300 flex justify-center">
+            Listings not present for this user
+          </p>
+        )}
       {userListings && userListings.length > 0 && (
         <div className="flex flex-col gap-4 relative">
           <h1 className="justify-center items-center mt-7 text-2xl font-semibold flex gap-2">

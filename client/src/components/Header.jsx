@@ -21,15 +21,13 @@ export default function Header() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-  console.log(!currentUser);
   useEffect(() => {
     if (currentUser != null || isAdmin) checkIfIsAdmin(currentUser, setIsAdmin);
-    console.log(isAdmin);
   }, [currentUser]);
-
+  console.log(isAdmin);
   return (
     <header className="bg-white">
-      <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
+      <div className="flex justify-between items-center max-w-6xl lg:max-w-none lg:pl-32 lg:pr-10 mx-auto p-3">
         <Link to="/">
           {isSmallScreen ? (
             <img width={35} height={35} src={home} alt="houseav" />
@@ -57,15 +55,15 @@ export default function Header() {
               About
             </li>
           </Link>
-          {isAdmin && (
+          {isAdmin && currentUser != null && currentUser.role.length > 1 && (
             <Link to="/dashboard">
-              <RxDashboard className="text-2xl text-center flex items-center" />
+              <RxDashboard className="text-2xl text-center flex items-center hover:text-gray-600 hover:scale-105 hover:text-shadow-lg" />
             </Link>
           )}
           <Link to="/profile">
             {currentUser ? (
               <img
-                className="rounded-full h-8 w-8 object-cover"
+                className="rounded-full h-8 w-8 object-cover border border-gray-600 hover:shadow-lg hover:scale-105 hover:border hover:border-gray-300"
                 src={currentUser.avatar}
                 alt="profile"
               />
