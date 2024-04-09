@@ -21,9 +21,9 @@ export default function Header() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
+  console.log(!currentUser);
   useEffect(() => {
-    if (currentUser || !isAdmin) checkIfIsAdmin(currentUser, setIsAdmin);
+    if (currentUser != null || isAdmin) checkIfIsAdmin(currentUser, setIsAdmin);
     console.log(isAdmin);
   }, [currentUser]);
 

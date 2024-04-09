@@ -1,5 +1,6 @@
 import Role from "../models/role.model.js";
 import Permission from "../models/permission.model.js";
+import QueueRegistration from "../models/queueRegister.js";
 
 
 //Role and Permissions
@@ -53,5 +54,15 @@ async function createRolesAndPermissions() {
       console.error('Error creating roles and permissions:', error);
     }
   }
+
+
+async function createQueueRegister() {
+  try {
+    const QueueRegister = await QueueRegistration.create();
+    console.log('QueueRegister created successfully!');
+  } catch (error) {
+    console.error('Error creating queue register:', error);
+  }
+}
   
   export default createRolesAndPermissions;

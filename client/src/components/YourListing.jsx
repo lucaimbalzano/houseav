@@ -2,7 +2,11 @@ import { Link } from "react-router-dom";
 import { RiDeleteBin6Fill, RiEditCircleFill } from "react-icons/ri";
 import { BsHousesFill } from "react-icons/bs";
 
-export default function YourListing({ userListings, setUserListings }) {
+export default function YourListing({
+  userListings,
+  setUserListings,
+  currentUser,
+}) {
   const handleListingDelete = async (listingId) => {
     try {
       const res = await fetch(`/api/listing/delete/${listingId}`, {
@@ -23,17 +27,17 @@ export default function YourListing({ userListings, setUserListings }) {
   };
   return (
     <div>
-      {userListings.length > 0 && (
+      {currentUser.role.length > 1 && userListings.length == 0 && (
         <p className="text-sm text-blue-300 flex justify-center">
           Listings not present for this user
         </p>
       )}
       {userListings && userListings.length > 0 && (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 relative">
           <h1 className="justify-center items-center mt-7 text-2xl font-semibold flex gap-2">
             <BsHousesFill /> Your Listings
           </h1>
-          <div className="bg-white w-96 shadow-md rounded-xl p-3">
+          <div className="bg-white w-auto shadow-md rounded-xl p-3">
             {userListings.map((listing) => (
               <div
                 key={listing._id}

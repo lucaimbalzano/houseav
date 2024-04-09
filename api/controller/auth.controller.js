@@ -3,6 +3,7 @@ import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
 import jwt from 'jsonwebtoken';
 import Role from "../models/role.model.js";
+import QueueRegistration from "../models/queueRegister.js";
 
 export const signup = async (req, res, next) => {
     const {username, email, password} = req.body;
@@ -10,8 +11,10 @@ export const signup = async (req, res, next) => {
     const userRolePending = await Role.findOne({'name':'pendingUser'});
     const newUser = new User({username, email, password: hashedPassword, role: userRolePending});
     try{
-        await newUser.save();
-        res.status(201).json("User created successfully")
+        const userCreated = await newUser.save();
+        const queueRegister = new QueueRegistration({user: userCreated._id});
+        await queueRegister.save();
+        res.status(201).json("User created successfully, in queue to be accepted")
     }catch(error){
         next(errorHandler(550, error.message));
     }
