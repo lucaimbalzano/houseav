@@ -9,6 +9,7 @@ import {
 } from "firebase/storage";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { formattedDate } from "../../utils/utils.js";
 
 export default function UpdateListing() {
   const [imageUploadError, setImageUploadError] = useState(false);
@@ -41,16 +42,6 @@ export default function UpdateListing() {
     availabilityDateEndOn: currentTimePlusWeek,
     sleepPlace: 1,
   });
-
-  function formattedDate(dateInput) {
-    try {
-      const date = new Date(dateInput);
-      const formattedDate = date.toISOString().split("T")[0];
-      return formattedDate;
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   useEffect(() => {
     const fetchListing = async () => {
@@ -90,6 +81,7 @@ export default function UpdateListing() {
       });
     }
   };
+
   const handleImageSubmit = (event) => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
       setUploading(true);
