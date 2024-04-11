@@ -8,8 +8,6 @@ import { checkIfIsAdmin } from "../../utils/utils";
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
   const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth <= 640);
-  const [searchTerm, setSearchTerm] = useState("");
-  const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
@@ -22,9 +20,9 @@ export default function Header() {
     };
   }, []);
   useEffect(() => {
-    if (currentUser != null || isAdmin) checkIfIsAdmin(currentUser, setIsAdmin);
+    if (currentUser != null)
+      if (currentUser.role || isAdmin) checkIfIsAdmin(currentUser, setIsAdmin);
   }, [currentUser]);
-  console.log(isAdmin);
   return (
     <header className="bg-white">
       <div className="flex justify-between items-center max-w-6xl lg:max-w-none lg:pl-32 lg:pr-10 mx-auto p-3">

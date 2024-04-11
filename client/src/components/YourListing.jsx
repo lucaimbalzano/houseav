@@ -27,7 +27,8 @@ export default function YourListing({
   };
   return (
     <div>
-      {currentUser.role.length > 1 &&
+      {currentUser.role &&
+        currentUser.role.length > 1 &&
         userListings != undefined &&
         userListings.length == 0 && (
           <p className="text-sm text-blue-300 flex justify-center">

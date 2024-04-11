@@ -21,6 +21,7 @@ import {
   handleSignOutLogic,
 } from "./handleFunctions";
 import ProfileInReview from "../../components/ProfileInReview";
+import ProfileModal from "../../components/Modal";
 
 export default function Profile() {
   const { currentUser, loading, error } = useSelector((state) => state.user);
@@ -33,12 +34,46 @@ export default function Profile() {
   const [showListingsError, setShowListingsError] = useState(false);
   const [userListings, setUserListings] = useState();
   const [formDataUserUpdate, setFormDataUserUpdate] = useState({});
+  const [modalInformations, setModalInformations] = useState({});
+  const modal = useRef();
 
   useEffect(() => {
     if (file) {
       handleFileUpload(file);
     }
   }, [file]);
+
+  const handleOpenCartClick = (buttonName) => {
+    if (buttonName === "delete")
+      setModalInformations({
+        title: "Attention",
+        description: `Hey, ${currentUser.username}, are you sure you want to delete the account?`,
+        actions: modalActions("Delete", "bg-red-600", handleDeleteUser),
+      });
+
+    if (buttonName === "signout")
+      setModalInformations({
+        title: "Sign Out",
+        description: "Are you sure you want to sign out?",
+        actions: modalActions("Sign Out", "bg-blue-400", handleSignOut),
+      });
+
+    modal.current.open();
+  };
+
+  var modalActions = (nameButton, bgColorButton, functionToCall) => (
+    <>
+      <button
+        className={`inline-flex w-full justify-center rounded-md ${bgColorButton} px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto`}
+        onClick={functionToCall}
+      >
+        {nameButton}
+      </button>
+      <button className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">
+        Close
+      </button>
+    </>
+  );
 
   const handleFileUpload = async (file) => {
     await handleFileUploadLogic(
@@ -99,7 +134,13 @@ export default function Profile() {
 
   return (
     <div className="p-3 max-w-lg mx-auto h-screen">
-      {currentUser.role.length > 1 ? (
+      <ProfileModal
+        ref={modal}
+        title={modalInformations.title || ""}
+        descriptions={modalInformations.description || ""}
+        actions={modalInformations.actions || ""}
+      />
+      {currentUser.role && currentUser.role.length > 1 ? (
         <>
           <h1 className="text-3xl font-semibold my-7 flex items-center gap-2 justify-center">
             <CgProfile />
@@ -116,7 +157,7 @@ export default function Profile() {
             <img
               src={formDataUserUpdate?.avatar || currentUser.avatar}
               alt="profile"
-              className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2 hover:scale-105 hover:shadow-lg hover:border-gray-400"
+              className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2 hover:scale-105 shadow-lg hover:border-gray-400"
               onClick={() => fileRef.current.click()}
             />
             <p className="text-sm self-center">
@@ -186,27 +227,27 @@ export default function Profile() {
               Show Listings
             </button>
           </form>
+          <div className="flex justify-between mt-5">
+            <span
+              className="text-red-700 cursor-pointer flex items-center gap-2 hover:scale-105"
+              onClick={() => handleOpenCartClick("delete")}
+            >
+              <TiUserDelete />
+              Delete account
+            </span>
+            <span
+              className="text-blue-500 cursor-pointer flex items-center gap-2 hover:scale-105"
+              onClick={() => handleOpenCartClick("signout")}
+            >
+              <FaSignOutAlt />
+              Sign out
+            </span>
+          </div>
         </>
       ) : (
         <ProfileInReview />
       )}
 
-      <div className="flex justify-between mt-5">
-        <span
-          className="text-red-700 cursor-pointer flex items-center gap-2 hover:scale-105"
-          onClick={handleDeleteUser}
-        >
-          <TiUserDelete />
-          Delete account
-        </span>
-        <span
-          className="text-blue-500 cursor-pointer flex items-center gap-2 hover:scale-105"
-          onClick={handleSignOut}
-        >
-          <FaSignOutAlt />
-          Sign out
-        </span>
-      </div>
       <div className="flex justify-center mt-5">
         <p className="text-red-700 mt-5">{error ? error : ""}</p>
         <p className="text-green-500 mt-5">
