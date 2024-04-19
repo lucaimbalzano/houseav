@@ -5,12 +5,20 @@ import authRouter from './routes/auth.route.js';
 import listingRouter from './routes/listing.route.js'
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-dotenv.config();
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-mongoose.connect(process.env.MONGO).then(()=>{
-    console.log('[connection] mongodb connected')
-}).catch((err) => console.log(err));
+const envFile = process.env.NODE_ENV === 'production' ? '.env.prod' : '.env.dev';
+const envPath = path.resolve(__dirname, envFile);
+dotenv.config({ path: envPath });
+
+// mongoose.connect(process.env.MONGO).then(()=>{
+//     console.log('[connection] mongodb connected')
+// }).catch((err) => console.log(err));
 
 const app = express();
 app.use(express.json());
