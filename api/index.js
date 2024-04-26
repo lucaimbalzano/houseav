@@ -4,17 +4,25 @@ import userRouter from './routes/user.route.js';
 import authRouter from './routes/auth.route.js';
 import listingRouter from './routes/listing.route.js'
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import mysql from 'mysql2/promise';
+import config from './utils/config.js'
 
-const envFile = process.env.NODE_ENV === 'production' ? '.env.prod' : '.env.dev';
-const envPath = path.resolve(__dirname, envFile);
-dotenv.config({ path: envPath });
+
+console.log('------------------ CONFIG:BEGIN')
+console.log(config.db)
+console.log('------------------ CONFIG:END')
+
+const connection = await mysql.createConnection({
+    host: config.db.host,
+    user: config.db.user,
+    database: config.db.database,
+    password: config.db.password
+  })
+  .then(() => console.log('[connection mysql done'))
+  .catch((err) => console.log(err));
+
+
 
 // mongoose.connect(process.env.MONGO).then(()=>{
 //     console.log('[connection] mongodb connected')

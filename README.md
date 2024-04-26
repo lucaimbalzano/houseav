@@ -3,7 +3,7 @@
 
 ## Dev & Prod environment setup 
 ```
-$ NODE_ENV=development node ./api/index.js
+$  NODE_ENV=staging node ./api/index.js
 $ NODE_ENV=production node ./api/index.js
 ```
 

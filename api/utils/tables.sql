@@ -30,35 +30,9 @@ CREATE TABLE Listing (
 CREATE TABLE ListingUrls (
     id SERIAL PRIMARY KEY AUTO_INCREMENT,
     url VARCHAR(500),
-    id_listing INT REFERENCES Listing(id)
+    fk_id_listing BIGINT UNSIGNED NOT NULL,
+    FOREIGN KEY(fk_id_listing)  REFERENCES Listing(id)
 )
-
-CREATE TABLE Permission (
-    id SERIAL PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) UNIQUE NOT NULL,
-    description TEXT
-);
-
-
-CREATE TABLE QueueRegistration (
-    id SERIAL PRIMARY KEY AUTO_INCREMENT,
-    user_id INT REFERENCES User(id),
-    verified BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-
-CREATE TABLE Role (
-    id SERIAL PRIMARY KEY AUTO_INCREMENT,
-    name VARCHAR(255) UNIQUE NOT NULL,
-    description TEXT
-);
-
-CREATE TABLE RolePermission (
-    role_id INT REFERENCES Role(id),
-    permission_id INT REFERENCES Permission(id)
-);
 
 
 CREATE TABLE User (
@@ -70,4 +44,47 @@ CREATE TABLE User (
     role_id INT REFERENCES Role(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE Permission (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) UNIQUE NOT NULL,
+    description TEXT
+);
+
+
+CREATE TABLE Role (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) UNIQUE NOT NULL,
+    description TEXT
+);
+
+CREATE TABLE RolePermission (
+    id SERIAL PRIMARY KEY AUTO_INCREMENT,
+    fk_role_id BIGINT NOT NULL,
+    fk_permission_id BIGINT NOT NULL,
+    FOREIGN KEY (fk_role_id) REFERENCES Role(id),
+    FOREIGN KEY (fk_permission_id) REFERENCES Permission(id)
+);
+
+CREATE TABLE QueueRegistration (
+    id SERIAL PRIMARY KEY AUTO_INCREMENT,
+    fk_user_id BIGINT UNSIGNED NOT NULL,
+    verified BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (fk_user_id) REFERENCES User(id)
+);
+
+
+CREATE TABLE QueueListing (
+    id SERIAL PRIMARY KEY AUTO_INCREMENT,
+    fk_user_id BIGINT UNSIGNED NOT NULL,
+    fk_listing_id BIGINT UNSIGNED NOT NULL,
+    verified BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (fk_user_id) REFERENCES User(id),
+    FOREIGN KEY (fk_listing_id) REFERENCES Listing(id)
 );
