@@ -11,6 +11,7 @@ export default function Header() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    console.log(currentUser)
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth <= 640);
     };
@@ -62,7 +63,7 @@ export default function Header() {
             {currentUser ? (
               <img
                 className="rounded-full h-8 w-8 object-cover border border-gray-600 hover:shadow-lg hover:scale-105 hover:border hover:border-gray-300"
-                src={currentUser.avatar}
+                src={currentUser.user.avatar}
                 alt="profile"
               />
             ) : (

@@ -20,7 +20,7 @@ import {
   handleShowListingsLogic,
   handleSignOutLogic,
 } from "./handleFunctions";
-import ProfileInReview from "../../components/ProfileInReview";
+import ProfileInReview from "./ProfileInReview";
 import ProfileModal from "../../components/Modal";
 
 export default function Profile() {
@@ -47,7 +47,7 @@ export default function Profile() {
     if (buttonName === "delete")
       setModalInformations({
         title: "Attention",
-        description: `Hey, ${currentUser.username}, are you sure you want to delete the account?`,
+        description: `Hey, ${currentUser.user.username}, are you sure you want to delete the account?`,
         actions: modalActions("Delete", "bg-red-600", handleDeleteUser),
       });
 
@@ -85,18 +85,26 @@ export default function Profile() {
     );
   };
 
+  // const handleChangeInput = (event) => {
+  //   setFormDataUserUpdate({
+  //     ...formDataUserUpdate,
+  //     [event.target.id]: event.target.value,
+  //   });
+  // };
+
   const handleChangeInput = (event) => {
-    setFormDataUserUpdate({
-      ...formDataUserUpdate,
-      [event.target.id]: event.target.value,
-    });
+    const { id, value } = event.target;
+    setFormDataUserUpdate((prevFormData) => ({
+      ...prevFormData,
+      [id]: value,
+    }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       dispatch(updateUserStart());
-      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+      const res = await fetch(`/api/user/update/${currentUser.user.id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -126,7 +134,7 @@ export default function Profile() {
   const handleShowListings = async (event) => {
     event.preventDefault();
     await handleShowListingsLogic(
-      currentUser._id,
+      currentUser.user.id,
       setShowListingsError,
       setUserListings
     );
@@ -140,7 +148,7 @@ export default function Profile() {
         descriptions={modalInformations.description || ""}
         actions={modalInformations.actions || ""}
       />
-      {currentUser.role && currentUser.role.length > 1 ? (
+      {currentUser.user.fkRoleId ? (
         <>
           <h1 className="text-3xl font-semibold my-7 flex items-center gap-2 justify-center">
             <CgProfile />
@@ -155,7 +163,7 @@ export default function Profile() {
               onChange={(event) => setFile(event.target.files[0])}
             />
             <img
-              src={formDataUserUpdate?.avatar || currentUser.avatar}
+              src={formDataUserUpdate?.avatar || currentUser.user.avatar}
               alt="profile"
               className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2 hover:scale-105 shadow-lg hover:border-gray-400"
               onClick={() => fileRef.current.click()}
@@ -178,7 +186,7 @@ export default function Profile() {
             <input
               type="text"
               placeholder="username"
-              defaultValue={currentUser.username}
+              defaultValue={currentUser.user.username}
               id="username"
               className="border p-3 rounded-lg"
               onChange={handleChangeInput}
@@ -187,7 +195,7 @@ export default function Profile() {
               type="email"
               placeholder="email"
               id="email"
-              defaultValue={currentUser.email}
+              defaultValue={currentUser.user.email}
               className="border p-3 rounded-lg"
               onChange={handleChangeInput}
             />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,42 +15,50 @@ export default function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // const handleChange = (event) => {
+  //   setFormData((prevFormData) => {
+  //     const updateFormData = { ...prevFormData, formData };
+  //     return {
+  //       ...updateFormData,
+  //       [event.target.id]: event.target.value,
+  //     };
+  //   });
+  // };
+
   const handleChange = (event) => {
-    setFormData((prevFormData) => {
-      const updateFormData = { ...prevFormData, formData };
-      return {
-        ...updateFormData,
-        [event.target.id]: event.target.value,
-      };
-    });
+    const { id, value } = event.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [id]: value,
+    }));
   };
 
-  const getRoleNamesByRoleId = async (role) => {
-    try {
-      dispatch(signInStart());
-      const res = await fetch("/api/user/roles", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ role }),
-      });
-      const data = await res.json();
-      if (data.success == false) {
-        dispatch(signInFailure(data.message));
-        return None;
-      }
-      return data;
-    } catch (error) {
-      dispatch(signInFailure(error.message));
-    }
-  };
+  // const getRoleNamesByRoleId = async (role) => {
+  //   try {
+  //     dispatch(signInStart());
+  //     const res = await fetch("/api/user/roles", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ role }),
+  //     });
+  //     const data = await res.json();
+  //     if (data.success == false) {
+  //       dispatch(signInFailure(data.message));
+  //       return null;
+  //     }
+  //     return data;
+  //   } catch (error) {
+  //     dispatch(signInFailure(error.message));
+  //   }
+  // };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       dispatch(signInStart());
-      const res = await fetch("/api/auth/signin", {
+      const res = await fetch("/auth/sign-in", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -58,13 +66,14 @@ export default function SignIn() {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      if (data.success == false) {
+      const acceptableStatusCodes = [200, 201, 202];
+      if (!acceptableStatusCodes.includes(res.status)) {
         dispatch(signInFailure(data.message));
         return;
       }
-      var roleNames = await getRoleNamesByRoleId(data.role);
-      if (!roleNames) dispatch(signInFailure(roleNames));
-      data.role = roleNames;
+      // var roleNames = await getRoleNamesByRoleId(data.role);
+      // if (!roleNames) dispatch(signInFailure(roleNames));
+      // data.fkRole = roleNames;
       dispatch(signInSuccess(data));
       navigate("/");
     } catch (error) {

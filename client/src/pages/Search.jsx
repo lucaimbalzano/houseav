@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ListingItem from "../components/ListingItem";
 import { FaSearch } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import ProfileInReview from "../components/ProfileInReview";
+import ProfileInReview from "../pages/Profile/ProfileInReview";
 
 export default function Search() {
   const navigate = useNavigate();
@@ -52,7 +52,7 @@ export default function Search() {
       setLoading(true);
       setShowMore(false);
       const searchQuery = urlParams.toString();
-      const res = await fetch(`/api/listing/get?${searchQuery}`);
+      const res = await fetch(`/house/get?${searchQuery}`);
       const data = await res.json();
       if (data.length > 8) {
         setShowMore(true);
@@ -102,7 +102,8 @@ export default function Search() {
     urlParams.set("sort", sidebardata.sort);
     urlParams.set("order", sidebardata.order);
     const searchQuery = urlParams.toString();
-    navigate(`/search?${searchQuery}`);
+    // navigate(`/search?${searchQuery}`);
+    //GET HOUSES WITH NEW PARAMETERES AND FILL OUR USESTATE
   };
 
   const onShowMoreClick = async () => {
@@ -111,7 +112,7 @@ export default function Search() {
     const urlParams = new URLSearchParams(location.search);
     urlParams.set("startIndex", startIndex);
     const searchQuery = urlParams.toString();
-    const res = await fetch(`/api/listing/get?${searchQuery}`);
+    const res = await fetch(`/house/get?${searchQuery}`);
     const data = await res.json();
     if (data.length < 9) {
       setShowMore(false);
@@ -120,7 +121,7 @@ export default function Search() {
   };
   return (
     <div className="flex flex-col md:flex-row">
-      {currentUser.role.length > 1 ? (
+      {currentUser.user.fkRoleId ? (
         <>
           <div className="p-7  border-b-2 md:border-r-2 md:min-h-screen">
             <form onSubmit={handleSubmit} className="flex flex-col gap-8">

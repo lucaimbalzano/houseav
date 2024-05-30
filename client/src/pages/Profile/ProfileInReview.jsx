@@ -1,4 +1,4 @@
-import SafeSpinner from "../assets/spinner-safe.gif";
+import SafeSpinner from "../../assets/spinner-safe.gif";
 
 export default function ProfileInReview() {
   return (

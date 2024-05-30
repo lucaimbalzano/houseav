@@ -16,7 +16,7 @@ export default function Home() {
   useEffect(() => {
     const fetchOfferListings = async () => {
       try {
-        const res = await fetch("/api/listing/get?offer=true&limit=4");
+        const res = await fetch("/house/get?offer=true&limit=4");
         const data = await res.json();
         setOfferListings(data);
       } catch (error) {
@@ -39,7 +39,7 @@ export default function Home() {
             <br />1 Peter 4:9
           </div>
 
-          {currentUser.role && currentUser.role.length > 1 && <SearchFilter />}
+          {currentUser.user.fkRoleId && <SearchFilter />}
         </div>
 
         <div className="flex-1 flex justify-center pr-2 md:pr-32">
@@ -70,7 +70,7 @@ export default function Home() {
       </Swiper> */}
 
       {/* listing results for offer, sale and rent */}
-      {currentUser.role && currentUser.role.length > 1 && (
+      {currentUser.user.fkRoleId && (
         <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
           {offerListings && offerListings.length > 0 && (
             <div className="">
@@ -87,7 +87,7 @@ export default function Home() {
               </div>
               <div className="flex flex-wrap gap-4">
                 {offerListings.map((listing) => (
-                  <ListingItem listing={listing} key={listing._id} />
+                  <ListingItem listing={listing} key={listing.id} />
                 ))}
               </div>
             </div>
