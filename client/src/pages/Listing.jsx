@@ -37,19 +37,19 @@ export default function Listing() {
     const fetchListing = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/listing/get/${params.id}`);
-        const data = await res.json();
-        if (data.success === false) {
+        const res = await fetch(`/house/${params.id}`);
+        const acceptableStatusCodes = [200, 201, 202];
+        if (!acceptableStatusCodes.includes(res.status)) {
           setError(true);
           setLoading(false);
           return;
         }
+        const data = await res.json();
         setListing({
           ...data,
-          availabilityDateStartFrom: getFormattedDate(
-            data.availabilityDateStartFrom
-          ),
-          availabilityDateEndOn: getFormattedDate(data.availabilityDateEndOn),
+          availabilityDateStart: getFormattedDate(data.availabilityDateStart),
+          availabilityDateEnd: getFormattedDate(data.availabilityDateEnd),
+          imageUrls: data.imageUrls.split(";")
         });
 
         setLoading(false);
@@ -61,8 +61,9 @@ export default function Listing() {
     };
     fetchListing();
   }, [params.id]);
-  if (listing) console.log(listing.userRef + "\n" + currentUser._id);
+  
 
+  
   return (
     <main>
       {loading && <p className="text-center my-7 text-2xl">Loading...</p>}
@@ -92,7 +93,7 @@ export default function Listing() {
           )}
           <div className="flex flex-col max-w-4xl mx-auto p-3 my-7 gap-4">
             <div className="flex text-2xl font-semibold">
-              {listing.name} -
+              {listing.title} -
               {listing.availability ? (
                 <span className={listing.availability ? "ml-2 flex" : "flex"}>
                   <span
@@ -126,24 +127,24 @@ export default function Listing() {
               {listing.address}
             </p>
             <div className="flex gap-4">
-              {listing.availabilityDateStartFrom && (
+              {listing.availabilityDateStart && (
                 <div className="bg-blue-400 w-full max-w-[200px] text-white text-center p-2 rounded-md flex gap-6 items-center">
                   <BsFillCalendarDateFill className="" />
                   <div>
                     <span className="">
                       <p className="text-[10px] text-gray-300">from</p>
-                      {listing.availabilityDateStartFrom}
+                      {listing.availabilityDateStart}
                     </span>
                   </div>
                 </div>
               )}
-              {listing.availabilityDateEndOn && (
+              {listing.availabilityDateEnd && (
                 <div className="bg-blue-500 w-full max-w-[200px] text-white text-center p-3 rounded-md flex gap-6 items-center">
                   <BsFillCalendarDateFill className="" />
                   <div>
                     <span className="">
                       <p className="text-[10px] text-gray-300">to</p>
-                      {listing.availabilityDateEndOn}
+                      {listing.availabilityDateEnd}
                     </span>
                   </div>
                 </div>
@@ -187,8 +188,8 @@ export default function Listing() {
             </ul>
             {currentUser &&
               listing &&
-              listing.userRef &&
-              listing.userRef !== currentUser._id &&
+              listing.fkIdUser &&
+              listing.fkIdUser.id !== currentUser.id &&
               !contact && (
                 <button
                   onClick={() => setContact(true)}

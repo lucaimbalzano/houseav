@@ -11,9 +11,8 @@ export default function SignUp() {
 
   const handleChange = (event) => {
     setFormData((prevFormData) => {
-      const updateFormData = { ...prevFormData, formData };
       return {
-        ...updateFormData,
+        ...prevFormData,
         [event.target.id]: event.target.value,
       };
     });
@@ -22,19 +21,20 @@ export default function SignUp() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-    const res = await fetch("/api/auth/signup", {
+    const res = await fetch("/auth/sign-up", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
     });
-    const data = await res.json();
-    if (data.success == false) {
+    const acceptableStatusCodes = [200, 201, 202];
+    if (!acceptableStatusCodes.includes(res.status)) {
       setLoading(false);
-      setError(data.message);
+      // setError(data.message);
       return;
     }
+    // const data = await res.json();
     setError(null);
     setLoading(false);
     navigate("/sign-in");
