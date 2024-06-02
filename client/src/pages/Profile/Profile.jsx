@@ -104,18 +104,20 @@ export default function Profile() {
     event.preventDefault();
     try {
       dispatch(updateUserStart());
-      const res = await fetch(`/api/user/update/${currentUser.user.id}`, {
-        method: "POST",
+      const res = await fetch(`/user/${currentUser.user.id}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${currentUser.access_token}`
         },
         body: JSON.stringify(formDataUserUpdate),
       });
-      const data = await res.json();
-      if (data.success === false) {
-        dispatch(updateUserFailure(data.message));
+      const acceptableStatusCodes = [200, 201, 202];
+      if (!acceptableStatusCodes.includes(res.status)) {
+        dispatch(updateUserFailure("Error while updating user"));
         return;
       }
+      const data = await res.json();
       dispatch(updateUserSuccess(data));
       setUpdateSuccess(true);
     } catch (error) {
@@ -128,7 +130,10 @@ export default function Profile() {
   };
 
   const handleSignOut = async () => {
-    await handleSignOutLogic(dispatch);
+    localStorage.clear();
+    window.location.reload();
+
+    // await handleSignOutLogic(dispatch);
   };
 
   const handleShowListings = async (event) => {

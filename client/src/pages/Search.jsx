@@ -52,7 +52,11 @@ export default function Search() {
       setLoading(true);
       setShowMore(false);
       const searchQuery = urlParams.toString();
-      const res = await fetch(`/house/get?${searchQuery}`);
+      const res = await fetch(`/house/get?${searchQuery}`, {
+        headers: {
+          'Authorization': `Bearer ${currentUser.access_token}`
+        }
+      });
       const data = await res.json();
       if (data.length > 8) {
         setShowMore(true);

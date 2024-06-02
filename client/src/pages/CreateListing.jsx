@@ -25,11 +25,11 @@ export default function CreateListing() {
   var oneWeek = 7 * 24 * 60 * 60 * 1000;
   var currentTimePlusWeek = currentTime + oneWeek;
   const [formData, setFormData] = useState({
-    imageUrls: [],
-    name: "",
+    imageUrls: "",
+    title: "",
     description: "",
     address: "",
-    type: "rent",
+    type: "apartment",
     bedrooms: 1,
     bathrooms: 1,
     regularPrice: 50,
@@ -45,7 +45,15 @@ export default function CreateListing() {
       .toISOString()
       .split("T")[0],
     sleepPlace: 1,
+    allergy: "",
+    animals:"",
+    requestRoommateType: "Any",
+    transportation: "",
+    zone: "",
   });
+
+
+
 
   const handleChange = (event) => {
     if (
@@ -80,21 +88,27 @@ export default function CreateListing() {
       for (let i = 0; i < files.length; i++) {
         promises.push(storeImageUrls(files[i]));
       }
+
       // I use Proimise because i have multiple asynchronous operations that can be executed concurrently, i wait all of them to complete before continuing.
       Promise.all(promises)
-        .then((urls) => {
-          setFormData({
-            ...formData,
-            imageUrls: formData.imageUrls.concat(urls),
-          });
-          setImageUploadError(false);
-          setUploading(false);
-        })
-        .catch((err) => {
-          console.log(err.message);
-          setImageUploadError("Image upload failed (2 mb max per image)");
-          setUploading(false);
+      .then((urls) => {
+        const existingUrls = formData.imageUrls ? formData.imageUrls.split(';') : [];
+        const allUrls = existingUrls.concat(urls);
+        const concatenatedUrls = allUrls.join(';');
+        
+        setFormData({
+          ...formData,
+          imageUrls: concatenatedUrls,
         });
+        setImageUploadError(false);
+        setUploading(false);
+      })
+      .catch((err) => {
+        console.log(err.message);
+        setImageUploadError("Image upload failed (2 mb max per image)");
+        setUploading(false);
+      });
+    
     } else {
       setImageUploadError("You can only upload 6 images per listing");
       setUploading(false);
@@ -145,22 +159,24 @@ export default function CreateListing() {
         return setError("You must upload at least one image");
       setLoading(true);
       setError(false);
-      const res = await fetch("/api/listing/create", {
+      const res = await fetch("/house", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${currentUser.access_token}`
         },
         body: JSON.stringify({
           ...formData,
-          userRef: currentUser._id,
+          userId: currentUser.user.id,
         }),
       });
-      const data = await res.json();
       setLoading(false);
-      if (data.success === false) {
-        setError(data.message);
+      const acceptableStatusCodes = [200, 201, 202];
+      if (!acceptableStatusCodes.includes(res.status)) {
+        setError("Error while adding this listing");
       }
-      navigate(`/listing/${data._id}`);
+      const data = await res.json();
+      navigate(`/listing/${data.id}`);
     } catch (error) {
       setError(error.message);
       setLoading(false);
@@ -177,14 +193,14 @@ export default function CreateListing() {
         <div className="flex flex-col gap-4 flex-1">
           <input
             type="text"
-            placeholder="Name"
+            placeholder="Title"
             className="border p-3 rounded-lg"
-            id="name"
+            id="title"
             maxLength="62"
             minLength="10"
             required
             onChange={handleChange}
-            value={formData.name}
+            value={formData.title}
           />
           <textarea
             type="text"
@@ -356,7 +372,7 @@ export default function CreateListing() {
             {imageUploadError && imageUploadError}
           </p>
           {formData.imageUrls.length > 0 &&
-            formData.imageUrls.map((url, index) => (
+            formData.imageUrls.split(";").map((url, index) => (
               <div
                 key={url}
                 className="flex justify-between p-3 border items-center"
@@ -375,6 +391,54 @@ export default function CreateListing() {
                 </button>
               </div>
             ))}
+              <div className="flex flex-col gap-4 flex-1">
+          <input
+            type="text"
+            placeholder="Allergy"
+            className="border p-3 rounded-lg"
+            id="allergy"
+            maxLength="62"
+            minLength="10"
+            required
+            onChange={handleChange}
+            value={formData.allergy}
+          />
+                  <input
+            type="text"
+            placeholder="Animals"
+            className="border p-3 rounded-lg"
+            id="animals"
+            maxLength="62"
+            minLength="5"
+            required
+            onChange={handleChange}
+            value={formData.animals}
+          />
+                            <input
+            type="text"
+            placeholder="Roommate Type"
+            className="border p-3 rounded-lg"
+            id="requestRoommateType"
+            maxLength="62"
+            minLength="5"
+            required
+            onChange={handleChange}
+            value={formData.requestRoommateType}
+          />
+                                      <input
+            type="text"
+            placeholder="Transportation"
+            className="border p-3 rounded-lg"
+            id="transportation"
+            maxLength="62"
+            minLength="5"
+            required
+            onChange={handleChange}
+            value={formData.transportation}
+          />
+          </div>
+
+
           <button
             disabled={loading || uploading}
             className="w-full text-center mt-4 justify-center text-gray-900 font-semibold py-3 px-6 bg-gray-400 bg-opacity-50 rounded-lg shadow-md hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out flex items-center gap-3"

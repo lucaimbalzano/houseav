@@ -46,7 +46,8 @@ export  const handleShowListingsLogic = async (id, setShowListingsError, setUser
       setShowListingsError(false);
       const res = await fetch(`/api/user/listings/${id}`);
       const data = await res.json();
-      if (data.success === false) {
+      const acceptableStatusCodes = [200, 201, 202];
+      if (!acceptableStatusCodes.includes(res.status)) {
         setShowListingsError(true);
         return;
       }
@@ -60,9 +61,10 @@ export  const handleShowListingsLogic = async (id, setShowListingsError, setUser
 export const handleSignOutLogic = async (dispatch) => {
   try {
     dispatch(signOutUserStart());
-    const res = await fetch("/api/auth/signout");
+    const res = await fetch("/auth/sign-out");
     const data = await res.json();
-    if (data.success === false) {
+    const acceptableStatusCodes = [200, 201, 202];
+    if (!acceptableStatusCodes.includes(res.status)) {
       dispatch(deleteUserFailure(data.message));
       return;
     }
@@ -80,7 +82,8 @@ export const handleDeleteUserLogic = async (dispatch, currentUser) => {
       method: "DELETE",
     });
     const data = await res.json();
-    if (data.success === false) {
+    const acceptableStatusCodes = [200, 201, 202];
+    if (!acceptableStatusCodes.includes(res.status)) {
       dispatch(deleteUserFailure(data.message));
       return;
     }
