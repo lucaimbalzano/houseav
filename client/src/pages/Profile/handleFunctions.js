@@ -41,10 +41,15 @@ export const handleFileUploadLogic = async (file, setFileProgression, setFileUpl
     );
   };
   
-export  const handleShowListingsLogic = async (id, setShowListingsError, setUserListings) => {
+export  const handleShowListingsLogic = async (id, setShowListingsError, setUserListings, currentUser) => {
     try {
       setShowListingsError(false);
-      const res = await fetch(`/api/user/listings/${id}`);
+        const res = await fetch(`/house/user/${id}`, {
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${currentUser.access_token}`
+          }
+        });
       const data = await res.json();
       const acceptableStatusCodes = [200, 201, 202];
       if (!acceptableStatusCodes.includes(res.status)) {

@@ -141,7 +141,8 @@ export default function Profile() {
     await handleShowListingsLogic(
       currentUser.user.id,
       setShowListingsError,
-      setUserListings
+      setUserListings,
+      currentUser
     );
   };
 

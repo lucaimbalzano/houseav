@@ -80,7 +80,7 @@ export default function CreateListing() {
     }
   };
   const handleImageSubmit = (event) => {
-    if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
+    if (files.length > 0 && files.length + formData.imageUrls.split(";").length < 7) {
       setUploading(true);
       setImageUploadError(false);
       const promises = [];
@@ -146,7 +146,7 @@ export default function CreateListing() {
   const handleRemoveImage = (index) => {
     setFormData({
       ...formData,
-      imageUrls: formData.imageUrls.filter(
+      imageUrls: formData.imageUrls.split(";").filter(
         (item, indexUrls) => indexUrls != index
       ),
     });
@@ -155,7 +155,7 @@ export default function CreateListing() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      if (formData.imageUrls.length < 1)
+      if (formData.imageUrls.split(";").length < 1)
         return setError("You must upload at least one image");
       setLoading(true);
       setError(false);
@@ -174,9 +174,10 @@ export default function CreateListing() {
       const acceptableStatusCodes = [200, 201, 202];
       if (!acceptableStatusCodes.includes(res.status)) {
         setError("Error while adding this listing");
+        return;
       }
-      const data = await res.json();
-      navigate(`/listing/${data.id}`);
+      
+      navigate(`/profile`);
     } catch (error) {
       setError(error.message);
       setLoading(false);

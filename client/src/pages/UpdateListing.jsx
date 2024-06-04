@@ -26,10 +26,10 @@ export default function UpdateListing() {
   var currentTimePlusWeek = currentTime + oneWeek;
   const [formData, setFormData] = useState({
     imageUrls: [],
-    name: "",
+    title: "",
     description: "",
     address: "",
-    type: "rent",
+    type: "apartment",
     bedrooms: 1,
     bathrooms: 1,
     regularPrice: 50,
@@ -38,22 +38,42 @@ export default function UpdateListing() {
     parking: false,
     furnished: false,
     availability: true,
-    availabilityDateStartFrom: currentTime,
-    availabilityDateEndOn: currentTimePlusWeek,
+    availabilityDateStart: new Date(currentTime)
+      .toISOString()
+      .split("T")[0],
+    availabilityDateEnd: new Date(currentTimePlusWeek)
+      .toISOString()
+      .split("T")[0],
     sleepPlace: 1,
+    allergy: "",
+    animals:"",
+    requestRoommateType: "Any",
+    transportation: "",
+    zone: "",
   });
-
+  
   useEffect(() => {
     const fetchListing = async () => {
       const listingId = params.listingId;
-      const listing = await fetch(`/api/listing/get/${listingId}`).catch(error);
-      const data = await listing.json();
-      if (data.success === false) {
+      const res = await fetch(`/house/${listingId}`, {
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': `Bearer ${currentUser.access_token}`
+        }
+      }).catch(error);
+      const data = await res.json();
+      const acceptableStatusCodes = [200, 201, 202];
+      if (!acceptableStatusCodes.includes(res.status)) {
         console.log(data.message);
         return;
       }
-      setFormData(data);
+      
+      setFormData({
+        ...data,
+        imageUrls: data.imageUrls.split(";"),
+      });
     };
+
     fetchListing();
   }, []);
 
@@ -93,19 +113,20 @@ export default function UpdateListing() {
       }
       // I use Proimise because i have multiple asynchronous operations that can be executed concurrently, i wait all of them to complete before continuing.
       Promise.all(promises)
-        .then((urls) => {
-          setFormData({
-            ...formData,
-            imageUrls: formData.imageUrls.concat(urls),
-          });
-          setImageUploadError(false);
-          setUploading(false);
-        })
-        .catch((err) => {
-          console.log(err.message);
-          setImageUploadError("Image upload failed (2 mb max per image)");
-          setUploading(false);
+      .then((urls) => {
+        setFormData({
+          ...formData,
+          imageUrls: formData.imageUrls.concat(urls),
         });
+        setImageUploadError(false);
+        setUploading(false);
+      })
+      .catch((err) => {
+        console.log(err.message);
+        setImageUploadError("Image upload failed (2 mb max per image)");
+        setUploading(false);
+      });
+
     } else {
       setImageUploadError("You can only upload 6 images per listing");
       setUploading(false);
@@ -157,22 +178,27 @@ export default function UpdateListing() {
         return setError("You must upload at least one image");
       setLoading(true);
       setError(false);
-      const res = await fetch(`/api/listing/update/${params.listingId}`, {
-        method: "POST",
+      formData.imageUrls = formData.imageUrls.join(";")
+      formData.bedrooms = +formData.bedrooms;
+      formData.bathrooms = +formData.bathrooms;
+      formData.sleepPlace = +formData.sleepPlace;
+      const res = await fetch(`/house/${params.listingId}`, {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': `Bearer ${currentUser.access_token}`
         },
         body: JSON.stringify({
           ...formData,
-          userRef: currentUser._id,
+          userId: currentUser.user.id,
         }),
       });
-      const data = await res.json();
       setLoading(false);
-      if (data.success === false) {
-        setError(data.message);
+      const acceptableStatusCodes = [200, 201, 202];
+      if (!acceptableStatusCodes.includes(res.status)) {
+        setError("Error while adding this listing");
       }
-      navigate(`/listing/${data._id}`);
+      navigate(`/listing/${formData.id}`);
     } catch (error) {
       setError(error.message);
       setLoading(false);
@@ -189,14 +215,14 @@ export default function UpdateListing() {
         <div className="flex flex-col gap-4 flex-1">
           <input
             type="text"
-            placeholder="Name"
+            placeholder="title"
             className="border p-3 rounded-lg"
-            id="name"
+            id="title"
             maxLength="62"
             minLength="10"
             required
             onChange={handleChange}
-            value={formData.name}
+            value={formData.title}
           />
           <textarea
             type="text"
@@ -222,20 +248,20 @@ export default function UpdateListing() {
             type="date"
             placeholder="Date Start From"
             className="border p-3 rounded-lg focus:outline-none focus:ring focus:border-blue-300 transition duration-300 ease-in-out bg-gradient-to-br from-gray-200 to-gray-100 hover:to-gray-50"
-            id="availabilityDateStartFrom"
+            id="availabilityDateStart"
             required
             onChange={handleChange}
-            value={formattedDate(formData.availabilityDateStartFrom)}
+            value={formattedDate(formData.availabilityDateStart)}
           />
           <label className="text-gray-400 text-xs text-end pr-5">to</label>
           <input
             type="date"
             placeholder="Date end to"
             className="border p-3 rounded-lg focus:outline-none focus:ring focus:border-blue-300 transition duration-300 ease-in-out bg-gradient-to-br from-gray-200 to-gray-100 hover:to-gray-50"
-            id="availabilityDateEndOn"
+            id="availabilityDateEnd"
             required
             onChange={handleChange}
-            value={formattedDate(formData.availabilityDateEndOn)}
+            value={formattedDate(formData.availabilityDateEnd)}
           />
           <div className="flex gap-6 flex-wrap">
             <div className="flex gap-2">
@@ -352,8 +378,8 @@ export default function UpdateListing() {
           <p className="text-red-700 text-sm">
             {imageUploadError && imageUploadError}
           </p>
-          {formData.imageUrls.length > 0 &&
-            formData.imageUrls.map((url, index) => (
+          {Array.isArray(formData.imageUrls) && formData.imageUrls.length > 0 &&
+  formData.imageUrls.map((url, index) => (
               <div
                 key={url}
                 className="flex justify-between p-3 border items-center"
@@ -372,6 +398,52 @@ export default function UpdateListing() {
                 </button>
               </div>
             ))}
+                      <div className="flex flex-col gap-4 flex-1">
+          <input
+            type="text"
+            placeholder="Allergy"
+            className="border p-3 rounded-lg"
+            id="allergy"
+            maxLength="62"
+            minLength="10"
+            required
+            onChange={handleChange}
+            value={formData.allergy}
+          />
+                  <input
+            type="text"
+            placeholder="Animals"
+            className="border p-3 rounded-lg"
+            id="animals"
+            maxLength="62"
+            minLength="5"
+            required
+            onChange={handleChange}
+            value={formData.animals}
+          />
+                            <input
+            type="text"
+            placeholder="Roommate Type"
+            className="border p-3 rounded-lg"
+            id="requestRoommateType"
+            maxLength="62"
+            minLength="5"
+            required
+            onChange={handleChange}
+            value={formData.requestRoommateType}
+          />
+                                      <input
+            type="text"
+            placeholder="Transportation"
+            className="border p-3 rounded-lg"
+            id="transportation"
+            maxLength="62"
+            minLength="5"
+            required
+            onChange={handleChange}
+            value={formData.transportation}
+          />
+          </div>
           <button
             disabled={loading || uploading}
             className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"

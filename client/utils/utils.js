@@ -17,10 +17,20 @@ export const checkIfIsAdmin = (currentUser, setAdmin) => {
 
 export const formattedDate = (dateInput) => {
     try {
+        
+      if (!dateInput) {
+        throw new Error('Invalid date input');
+      }
       const date = new Date(dateInput);
-      const formattedDate = date.toISOString().split("T")[0];
-      return formattedDate;
+      if (isNaN(date.getTime())) {
+        throw new Error('Invalid date');
+      }
+      
+      const formattedDateISO = date.toISOString().split("T")[0];
+      return formattedDateISO;
     } catch (error) {
       console.log(error);
+      return ''; // Return an empty string or handle the error as needed
     }
-  }
+  };
+  

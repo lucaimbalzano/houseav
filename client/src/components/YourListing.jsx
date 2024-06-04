@@ -19,7 +19,7 @@ export default function YourListing({
       }
 
       setUserListings((prev) =>
-        prev.filter((listing) => listing._id !== listingId)
+        prev.filter((listing) => listing.id !== listingId)
       );
     } catch (error) {
       console.log(error.message);
@@ -42,32 +42,32 @@ export default function YourListing({
           <div className="bg-white w-auto shadow-md rounded-xl p-3">
             {userListings.map((listing) => (
               <div
-                key={listing._id}
+                key={listing.id}
                 className="rounded-lg p-3 flex justify-between items-center gap-4 hover:bg-slate-100"
               >
-                <Link to={`/listing/${listing._id}`}>
+                <Link to={`/listing/${listing.id}`}>
                   <img
-                    src={listing.imageUrls[0]}
+                    src={listing.imageUrls.split(";")[0]}
                     alt="listing cover"
                     className="rounded-full hover:scale-105 h-20 w-20 object-cover cursor-pointer self-center mt-2"
                   />
                 </Link>
                 <Link
                   className="text-slate-700 font-semibold  hover:underline truncate flex-1"
-                  to={`/listing/${listing._id}`}
+                  to={`/listing/${listing.id}`}
                 >
-                  <p className="whitespace-normal">{listing.name}</p>
+                  <p className="whitespace-normal">{listing.title}</p>
                 </Link>
 
                 <div className="flex flex-col item-center">
                   <button
-                    onClick={() => handleListingDelete(listing._id)}
+                    onClick={() => handleListingDelete(listing.id)}
                     className="text-red-700 hover:scale-105 opacity-65 flex items-center gap-2"
                   >
                     <RiDeleteBin6Fill />
                     Delete
                   </button>
-                  <Link to={`/update-listing/${listing._id}`}>
+                  <Link to={`/update-listing/${listing.id}`}>
                     <button className="text-green-700 hover:scale-105 opacity-65 flex items-center gap-2">
                       <RiEditCircleFill />
                       Edit
