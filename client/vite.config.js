@@ -25,6 +25,10 @@ export default defineConfig({
         target: 'http://localhost:3000',
         secure: false,
       },
+      '/queue-user-registration': {
+        target: 'http://localhost:3000',
+        secure: false,
+      },
     },
   },
 

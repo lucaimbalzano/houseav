@@ -5,19 +5,21 @@ import { BsHousesFill } from "react-icons/bs";
 export default function YourListing({
   userListings,
   setUserListings,
-  currentUser,
+  currentUser
 }) {
   const handleListingDelete = async (listingId) => {
     try {
-      const res = await fetch(`/api/listing/delete/${listingId}`, {
+      const res = await fetch(`/house/${listingId}`, {
         method: "DELETE",
+        headers: {
+            'Authorization': `Bearer ${currentUser.access_token}`
+          }
       });
-      const data = await res.json();
-      if (data.success === false) {
-        console.log(data.message);
+      const acceptableStatusCodes = [200, 201, 202];
+      if (!acceptableStatusCodes.includes(res.status)) {
+        console.log(res);
         return;
       }
-
       setUserListings((prev) =>
         prev.filter((listing) => listing.id !== listingId)
       );

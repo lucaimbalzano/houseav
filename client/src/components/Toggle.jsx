@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from "react";
 
-export default function Toggle() {
-  const [isChecked, setIsChecked] = useState(false);
+export default function Toggle({verified, onVerifiedChange}) {
+  const [isChecked, setIsChecked] = useState(verified);
 
   useEffect(() => {
-    // Effect to update the state of isChecked when the component mounts
     const checkbox = document.getElementById("toggle");
     setIsChecked(checkbox.checked);
-
-    // Cleanup function to remove event listener
     return () => {
       checkbox.removeEventListener("change", handleChange);
     };
   }, []);
 
   const handleChange = (e) => {
-    // Handle checkbox change event
     setIsChecked(e.target.checked);
+    onVerifiedChange(e.target.checked);
   };
 
   return (
@@ -31,7 +28,7 @@ export default function Toggle() {
         />
         <label
           htmlFor="toggle"
-          className="relative block w-10 h-6 rounded-full bg-gray-300 cursor-pointer"
+          className={`relative block w-10 h-6 rounded-full cursor-pointer ${isChecked ? 'bg-green-500' : 'bg-gray-300'}`}
         >
           <span
             className={

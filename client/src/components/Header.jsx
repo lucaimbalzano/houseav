@@ -22,7 +22,7 @@ export default function Header() {
   }, []);
   useEffect(() => {
     if (currentUser != null)
-      if (currentUser.role || isAdmin) checkIfIsAdmin(currentUser, setIsAdmin);
+      if (currentUser.user.fkRoleId || isAdmin) checkIfIsAdmin(currentUser, setIsAdmin);
   }, [currentUser]);
   return (
     <header className="bg-white">
@@ -54,7 +54,7 @@ export default function Header() {
               About
             </li>
           </Link>
-          {isAdmin && currentUser != null && currentUser.role.length > 1 && (
+          {isAdmin && (
             <Link to="/dashboard">
               <RxDashboard className="text-2xl text-center flex items-center hover:text-gray-600 hover:scale-105 hover:text-shadow-lg" />
             </Link>

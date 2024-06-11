@@ -11,10 +11,13 @@ export default function Search() {
   const [sidebardata, setSidebardata] = useState({
     searchTerm: "",
     parking: false,
-    furnished: false,
+    furnished: true,
     wifi: true,
-    sort: "created_at",
+    sort: "createdAt",
     order: "desc",
+    animali: false,
+    availability: true,
+    allergy: false
   });
 
   const [loading, setLoading] = useState(false);
@@ -29,6 +32,9 @@ export default function Search() {
     const wifiFromUrl = urlParams.get("wifi");
     const sortFromUrl = urlParams.get("sort");
     const orderFromUrl = urlParams.get("order");
+    const allergyFromUrl = urlParams.get("allergy");
+    const availabilityFromUrl = urlParams.get("availability");
+    const animaliFromUrl = urlParams.get("animali");
 
     if (
       searchTermFromUrl ||
@@ -36,7 +42,8 @@ export default function Search() {
       furnishedFromUrl ||
       wifiFromUrl ||
       sortFromUrl ||
-      orderFromUrl
+      orderFromUrl ||
+      allergyFromUrl
     ) {
       setSidebardata({
         searchTerm: searchTermFromUrl || "",
@@ -45,6 +52,9 @@ export default function Search() {
         wifi: wifiFromUrl === "true" ? true : false,
         sort: sortFromUrl || "created_at",
         order: orderFromUrl || "desc",
+        allergy: allergyFromUrl || false,
+        availability: availabilityFromUrl || true,
+        animali: animaliFromUrl ||  false
       });
     }
 
@@ -78,7 +88,10 @@ export default function Search() {
     if (
       e.target.id === "parking" ||
       e.target.id === "furnished" ||
-      e.target.id === "wifi"
+      e.target.id === "wifi" ||
+      e.target.id === "availability" || 
+      e.target.id === "allergy" ||
+      e.target.id === "animali"
     ) {
       setSidebardata({
         ...sidebardata,
@@ -88,10 +101,8 @@ export default function Search() {
     }
 
     if (e.target.id === "sort_order") {
-      const sort = e.target.value.split("_")[0] || "created_at";
-
+      const sort = e.target.value.split("_")[0] || "createdAt";
       const order = e.target.value.split("_")[1] || "desc";
-
       setSidebardata({ ...sidebardata, sort, order });
     }
   };
@@ -105,9 +116,11 @@ export default function Search() {
     urlParams.set("wifi", sidebardata.wifi);
     urlParams.set("sort", sidebardata.sort);
     urlParams.set("order", sidebardata.order);
+    urlParams.set("animali", sidebardata.animali);
+    urlParams.set("allergy", sidebardata.allergy);
+    urlParams.set("availability", sidebardata.availability);
     const searchQuery = urlParams.toString();
-    // navigate(`/search?${searchQuery}`);
-    //GET HOUSES WITH NEW PARAMETERES AND FILL OUR USESTATE
+    navigate(`/search?${searchQuery}`);
   };
 
   const onShowMoreClick = async () => {
@@ -116,7 +129,11 @@ export default function Search() {
     const urlParams = new URLSearchParams(location.search);
     urlParams.set("startIndex", startIndex);
     const searchQuery = urlParams.toString();
-    const res = await fetch(`/house/get?${searchQuery}`);
+    const res = await fetch(`/house/get?${searchQuery}`, {
+      headers: {
+        'Authorization': `Bearer ${currentUser.access_token}`
+      }
+    });
     const data = await res.json();
     if (data.length < 9) {
       setShowMore(false);
@@ -142,9 +159,41 @@ export default function Search() {
                   onChange={handleChange}
                 />
               </div>
+                <label className="font-semibold">Amenities:</label>
               <div className="flex gap-2 flex-wrap items-center">
-                <label className="font-semibold">Type:</label>
-
+                <div className="flex gap-2">
+                  <input
+                    type="checkbox"
+                    id="availability"
+                    className="w-5"
+                    onChange={handleChange}
+                    checked={sidebardata.availability}
+                  />
+                  <span>Availability</span>
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="checkbox"
+                    id="allergy"
+                    className="w-5"
+                    onChange={handleChange}
+                    checked={sidebardata.allergy}
+                  />
+                  <span>allergy</span>
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="checkbox"
+                    id="animali"
+                    className="w-5"
+                    onChange={handleChange}
+                    checked={sidebardata.animali}
+                  />
+                  <span>Animali</span>
+                </div>
+              </div>
+              <div className="flex gap-2 flex-wrap items-center">
+                
                 <div className="flex gap-2">
                   <input
                     type="checkbox"
@@ -155,9 +204,6 @@ export default function Search() {
                   />
                   <span>Wifi</span>
                 </div>
-              </div>
-              <div className="flex gap-2 flex-wrap items-center">
-                <label className="font-semibold">Amenities:</label>
                 <div className="flex gap-2">
                   <input
                     type="checkbox"
@@ -191,6 +237,8 @@ export default function Search() {
                   <option value="regularPrice_asc">Price low to hight</option>
                   <option value="createdAt_desc">Latest</option>
                   <option value="createdAt_asc">Oldest</option>
+                  <option value="sleepPlace_desc">More sleep place</option>
+                  <option value="sleepPlace_asc">Less sleep place</option>
                 </select>
               </div>
               <button className="w-full text-center mt-4 justify-center text-gray-900 font-semibold py-3 px-6 bg-gray-400 bg-opacity-50 rounded-lg shadow-md hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out flex items-center gap-3 justify-between">

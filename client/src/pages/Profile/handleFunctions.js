@@ -83,16 +83,18 @@ export const handleSignOutLogic = async (dispatch) => {
 export const handleDeleteUserLogic = async (dispatch, currentUser) => {
   try {
     dispatch(deleteUserStart());
-    const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+    const res = await fetch(`/house/${currentUser.id}`, {
       method: "DELETE",
+      headers: {
+          'Authorization': `Bearer ${currentUser.access_token}`
+        }
     });
-    const data = await res.json();
     const acceptableStatusCodes = [200, 201, 202];
     if (!acceptableStatusCodes.includes(res.status)) {
-      dispatch(deleteUserFailure(data.message));
+      dispatch(deleteUserFailure("Error while deleting this house"));
       return;
     }
-    dispatch(deleteUserSuccess(data));
+    dispatch(deleteUserSuccess(res));
   } catch (error) {
     dispatch(deleteUserFailure(error.message));
   }

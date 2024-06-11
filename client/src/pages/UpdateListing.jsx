@@ -405,8 +405,7 @@ export default function UpdateListing() {
             className="border p-3 rounded-lg"
             id="allergy"
             maxLength="62"
-            minLength="10"
-            required
+            minLength="3"
             onChange={handleChange}
             value={formData.allergy}
           />
@@ -417,7 +416,6 @@ export default function UpdateListing() {
             id="animals"
             maxLength="62"
             minLength="5"
-            required
             onChange={handleChange}
             value={formData.animals}
           />
@@ -428,7 +426,6 @@ export default function UpdateListing() {
             id="requestRoommateType"
             maxLength="62"
             minLength="5"
-            required
             onChange={handleChange}
             value={formData.requestRoommateType}
           />
@@ -439,7 +436,6 @@ export default function UpdateListing() {
             id="transportation"
             maxLength="62"
             minLength="5"
-            required
             onChange={handleChange}
             value={formData.transportation}
           />

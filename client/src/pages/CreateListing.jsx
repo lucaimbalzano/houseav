@@ -38,10 +38,10 @@ export default function CreateListing() {
     parking: false,
     furnished: false,
     availability: true,
-    availabilityDateStartFrom: new Date(currentTime)
+    availabilityDateStart: new Date(currentTime)
       .toISOString()
       .split("T")[0],
-    availabilityDateEndOn: new Date(currentTimePlusWeek)
+    availabilityDateEnd: new Date(currentTimePlusWeek)
       .toISOString()
       .split("T")[0],
     sleepPlace: 1,
@@ -159,6 +159,9 @@ export default function CreateListing() {
         return setError("You must upload at least one image");
       setLoading(true);
       setError(false);
+      formData.bedrooms = +formData.bedrooms;
+      formData.bathrooms = +formData.bathrooms;
+      formData.sleepPlace = +formData.sleepPlace;
       const res = await fetch("/house", {
         method: "POST",
         headers: {
@@ -227,20 +230,20 @@ export default function CreateListing() {
             type="date"
             placeholder="Date Start From"
             className="border p-3 rounded-lg focus:outline-none focus:ring focus:border-blue-300 transition duration-300 ease-in-out bg-gradient-to-br from-gray-200 to-gray-100 hover:to-gray-50"
-            id="availabilityDateStartFrom"
+            id="availabilityDateStart"
             required
             onChange={handleChange}
-            value={formData.availabilityDateStartFrom}
+            value={formData.availabilityDateStart}
           />
           <label className="text-gray-400 text-xs text-end pr-5">to</label>
           <input
             type="date"
             placeholder="Date end to"
             className="border p-3 rounded-lg focus:outline-none focus:ring focus:border-blue-300 transition duration-300 ease-in-out bg-gradient-to-br from-gray-200 to-gray-100 hover:to-gray-50"
-            id="availabilityDateEndOn"
+            id="availabilityDateEnd"
             required
             onChange={handleChange}
-            value={formData.availabilityDateEndOn}
+            value={formData.availabilityDateEnd}
           />
           <div className="flex gap-6 flex-wrap">
             <div className="flex gap-2">
