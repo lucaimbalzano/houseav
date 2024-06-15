@@ -4,21 +4,37 @@ import { IoCheckmarkDoneCircle, IoCreate } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { formattedDate } from "../../../utils/utils";
 import Toggle from "../../components/Toggle";
+import SecurityEnDe from "../../../utils/security_en_de"
 
-export default function AdminUpdateProfile({ user }) {
+
+export default function AdminUpdateProfile({ user, setUser }) {
   const [loading, setLoading] = useState(false); // Define loading state
   const [userVerified, setUserVerified] = useState(user?.verified?? false);
-  const handleChangeInput = (event) => {};
+  const handleChangeInput = (event) => {
+    const { id, value } = event.target;
+    setUser((prevUser) => ({
+      ...prevUser,
+      [id]: value,
+    }));
+    console.log('USER INPUT CHANGES:::\n'+JSON.stringify(user))
+  };
+
+  const handleUpdateSingleProfile = async (e) => {
+    e.preventDefault();
+    setLoading(true)
+    const sec = new SecurityEnDe();
+    sec.testAesGcm();
+  }
 
   useEffect(() => {
-    console.log(user); // Check if user updates
-  }, [user]);
+    console.log("USER VERIFIED::::"+userVerified);
+    if(user) user.verified = userVerified;
+  }, [userVerified]);
 
   return (
     <div>
       {user ? (
         <div>
-          {/* <p>AdminUpdateProfile</p> */}
           <form className="flex flex-col gap-4">
             <input
               type="text"
@@ -88,7 +104,7 @@ export default function AdminUpdateProfile({ user }) {
             <Toggle verified={userVerified} onVerifiedChange={setUserVerified} />
             </div>
             <button
-              onClick={() => setLoading(true)} // Set loading state to true on button click
+              onClick={handleUpdateSingleProfile}
               className="w-full text-center mt-4 justify-center text-gray-900 font-semibold py-3 px-6 bg-gray-400 bg-opacity-50 rounded-lg shadow-md hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 ease-in-out flex items-center gap-3"
             >
               {loading ? (

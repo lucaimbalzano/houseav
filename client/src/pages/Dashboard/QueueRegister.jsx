@@ -79,8 +79,8 @@ export default function QueueRegister() {
         iconHeader={
           <FaUserEdit className="text-2xl pl-1 hover:scale-105 opacity-80" />
         }
-        actions={modalActions("Updates", "bg-orange-400", consoleLog)}
-        component={<AdminUpdateProfile user={userToUpdateRetrivedOnClick} />}
+        // actions={modalActions("Updates", "bg-orange-400", consoleLog)}
+        component={<AdminUpdateProfile user={userToUpdateRetrivedOnClick} setUser={setUserToUpdateRetrivedOnClick} />}
       />
       <h1 className="text-3xl font-semibold text-center my-7">
         Check Request Registration

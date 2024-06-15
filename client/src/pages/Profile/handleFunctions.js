@@ -99,3 +99,21 @@ export const handleDeleteUserLogic = async (dispatch, currentUser) => {
     dispatch(deleteUserFailure(error.message));
   }
 };
+
+export const handleUpdateSingleProfileVerified = async (access_token) => {
+  try {
+    const res = await fetch(`/`, {
+      method: "PUT",
+      headers: {
+          'Authorization': `Bearer ${access_token}`
+        }
+    });
+    const acceptableStatusCodes = [200, 201, 202];
+    if (!acceptableStatusCodes.includes(res.status)) {
+      console.log("Error while verify user")
+      return;
+    }
+  } catch (error) {
+    console.error("Error while verify user..")
+  }
+}
